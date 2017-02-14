@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/fragment_recycler_folder_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/fragment_folder_path_holder"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@android:color/white"
+        android:scrollbars="vertical" />
+
+    <TextView
+        android:id="@+id/fragment_folder_empty"
+        style="@style/AppTheme.Header"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/fragment_folder_path_holder"
+        android:gravity="center"
+        android:text="@string/no_files" />
+
+    <LinearLayout
+        android:id="@+id/fragment_folder_path_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/fragment_folder_seek_holder"
+        android:background="@color/control"
+        android:orientation="vertical">
+
+        <HorizontalScrollView
+            android:id="@+id/fragment_folder_path_scroller"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            tools:ignore="UselessParent">
+
+            <LinearLayout
+                android:id="@+id/fragment_folder_path"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+
+        </HorizontalScrollView>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/fragment_folder_seek_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/control"
+        android:paddingBottom="10dp">
+
+        <TextView
+            android:id="@+id/fragment_folder_cur_time"
+            style="@style/AppTheme.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:paddingEnd="5dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingStart="5dp"
+            android:text="@string/zero_time" />
+
+        <SeekBar
+            android:id="@+id/fragment_folder_seek"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_toEndOf="@+id/fragment_folder_cur_time"
+            android:layout_toLeftOf="@+id/fragment_folder_end_time"
+            android:layout_toRightOf="@+id/fragment_folder_cur_time"
+            android:layout_toStartOf="@+id/fragment_folder_end_time" />
+
+        <TextView
+            android:id="@+id/fragment_folder_end_time"
+            style="@style/AppTheme.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:paddingEnd="5dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingStart="5dp"
+            android:text="@string/zero_time" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

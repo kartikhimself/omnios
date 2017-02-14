@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="action_bar_semi">#77000000</color>
+    <color name="action_bar">#FF000000</color>
+    <color name="primary">#FF06AED5</color>
+    <color name="primary_dark">#FF06AED5</color>
+    <color name="selected">#FFf06292</color>
+    <color name="control">#FFE7ECEF</color>
+    <color name="active_text">#FFE7ECEF</color>
+    <color name="normal_text">#FF546e7a</color>
+</resources>

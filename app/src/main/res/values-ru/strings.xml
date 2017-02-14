@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Omnios</string>
+    <string name="no_files">Нет файлов</string>
+    <string name="zero_time">0:00</string>
+    <string name="notification_prev">Пред</string>
+    <string name="notification_stop">Пауза</string>
+    <string name="notification_next">След</string>
+    <string name="drawer_open">Сохраненные</string>
+    <string name="cant_play">Не могу воспроизвести</string>
+    <string name="remember_position">Сохранить позицию</string>
+    <string name="no_saved_paths">Нет сохраненных</string>
+    <string name="cant_find_location">Не могу найти расположение файла</string>
+    <string name="video_locked">Заблокированно, трижды коснитесь экрана для разблокировки</string>
+    <string name="unlock_to_go_back">Трижды коснитесь экрана для разблокировки</string>
+    <string name="add_to_queue">Добавить в очередь</string>
+    <string name="added_to_queue">Добавлено в очередь</string>
+    <string name="queue_is_empty">Очерердь пуста</string>
+    <string name="clear_list">Очистить</string>
+</resources>

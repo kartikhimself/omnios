@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_folder_bg"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true">
+
+    <RelativeLayout
+        android:id="@+id/item_folder_icon"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true">
+
+        <com.quewelcy.omnios.view.MusicIcon
+            android:id="@+id/item_folder_music_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true" />
+
+        <com.quewelcy.omnios.view.VideoIcon
+            android:id="@+id/item_folder_video_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true" />
+
+        <com.quewelcy.omnios.view.FolderIcon
+            android:id="@+id/item_folder_folder_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true" />
+
+        <com.quewelcy.omnios.view.mono.BookIcon
+            android:id="@+id/item_folder_book_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/item_folder_title"
+        style="@style/AppTheme.Header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/item_folder_icon"
+        android:layout_toRightOf="@+id/item_folder_icon" />
+
+</RelativeLayout>

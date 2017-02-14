@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    android:gravity="center"
+    android:keepScreenOn="true"
+    tools:ignore="Overdraw">
+
+    <com.quewelcy.omnios.view.BgSurfaceView
+        android:id="@+id/activity_video_surface"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center" />
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/action_bar_semi"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+
+    <RelativeLayout
+        android:id="@+id/activity_video_control_box"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/activity_video_pause"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/circle_cl"
+            android:clickable="true"
+            android:contentDescription="@string/app_name"
+            android:scaleType="centerInside"
+            android:src="@android:drawable/ic_media_play" />
+
+        <RelativeLayout
+            android:id="@+id/activity_video_seek_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/action_bar_semi"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/activity_video_cur_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true" />
+
+            <SeekBar
+                android:id="@+id/activity_video_seek"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_margin="5dp"
+                android:layout_toEndOf="@+id/activity_video_cur_time"
+                android:layout_toLeftOf="@+id/activity_video_end_time"
+                android:layout_toRightOf="@+id/activity_video_cur_time"
+                android:layout_toStartOf="@+id/activity_video_end_time" />
+
+            <TextView
+                android:id="@+id/activity_video_end_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/activity_video_progress"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_centerInParent="true" />
+
+</RelativeLayout>

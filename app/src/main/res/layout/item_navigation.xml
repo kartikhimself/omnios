@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:omnios="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <com.quewelcy.omnios.view.MusicIcon
+        android:id="@+id/item_folder_music_icon"
+        android:layout_width="16dp"
+        android:layout_height="18dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
+        omnios:circled="false" />
+
+    <TextView
+        android:id="@+id/item_navigation"
+        style="@style/AppTheme.Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="1dp"
+        android:background="@drawable/path_cl"
+        android:padding="6dp" />
+
+</LinearLayout>

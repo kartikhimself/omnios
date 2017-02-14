@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/navigation_normal_cl"
+    android:clickable="true">
+
+    <com.quewelcy.omnios.view.MusicIcon
+        android:id="@+id/item_continue_icon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:layout_margin="10dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/item_continue_icon"
+        android:layout_toRightOf="@+id/item_continue_icon"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_continue_title"
+            style="@style/AppTheme.Header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp" />
+
+        <TextView
+            android:id="@+id/item_continue_path_to"
+            style="@style/AppTheme.Hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginStart="5dp" />
+
+    </LinearLayout>
+
+</RelativeLayout>
