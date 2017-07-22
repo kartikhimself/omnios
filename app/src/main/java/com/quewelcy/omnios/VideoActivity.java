@@ -41,7 +41,7 @@ import com.quewelcy.omnios.Configures.Extras;
 import com.quewelcy.omnios.Configures.PermissionRequestCode;
 import com.quewelcy.omnios.data.Playable;
 import com.quewelcy.omnios.data.PrefHelper;
-import com.quewelcy.omnios.view.BgSurfaceView;
+import com.quewelcy.omnios.view.moving.MeanderBgSurfaceView;
 
 import org.videolan.libvlc.IVLCVout;
 import org.videolan.libvlc.LibVLC;
@@ -78,7 +78,7 @@ public class VideoActivity extends AppCompatActivity
     private BroadcastReceiver mReceiver;
     private TelephonyManager mTelephonyManager;
 
-    private BgSurfaceView mSurfaceView;
+    private MeanderBgSurfaceView mSurfaceView;
     private SurfaceHolder mSurfaceHolder;
     private ProgressBar mSpin;
     private View mSeekBox;
@@ -241,7 +241,7 @@ public class VideoActivity extends AppCompatActivity
         mSeekBox = findViewById(R.id.activity_video_seek_box);
         mCurTime = (TextView) findViewById(R.id.activity_video_cur_time);
         mEndTime = (TextView) findViewById(R.id.activity_video_end_time);
-        mSurfaceView = (BgSurfaceView) findViewById(R.id.activity_video_surface);
+        mSurfaceView = (MeanderBgSurfaceView) findViewById(R.id.activity_video_surface);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
         mUrl = Configures.getRealPathFromURI(this, getIntent().getData());

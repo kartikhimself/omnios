@@ -8,7 +8,7 @@
     android:keepScreenOn="true"
     tools:ignore="Overdraw">
 
-    <com.quewelcy.omnios.view.BgSurfaceView
+    <com.quewelcy.omnios.view.moving.MeanderBgSurfaceView
         android:id="@+id/activity_video_surface"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
