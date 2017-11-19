@@ -11,8 +11,8 @@ import static android.view.GestureDetector.SimpleOnGestureListener;
 
 public class RecyclerItemClickListener implements OnItemTouchListener {
 
-    private OnItemClickListener mClickListener;
-    private GestureDetector mGestureDetector;
+    private final OnItemClickListener mClickListener;
+    private final GestureDetector mGestureDetector;
     private View childView;
     private int childViewPosition;
 

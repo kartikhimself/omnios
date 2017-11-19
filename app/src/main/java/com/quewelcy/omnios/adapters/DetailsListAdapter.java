@@ -20,8 +20,8 @@ import static android.support.v7.widget.RecyclerView.ViewHolder;
 
 public abstract class DetailsListAdapter extends RecyclerView.Adapter<ViewHolder> {
 
-    private LayoutInflater mInflater;
-    private List<Playable> mDataSet;
+    private final LayoutInflater mInflater;
+    private final List<Playable> mDataSet;
 
     protected DetailsListAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
@@ -43,10 +43,10 @@ public abstract class DetailsListAdapter extends RecyclerView.Adapter<ViewHolder
         if (index < 0) {
             return;
         }
-        TextView title = (TextView) holder.itemView.findViewById(R.id.item_continue_title);
+        TextView title = holder.itemView.findViewById(R.id.item_continue_title);
         title.setText(Configures.dropExtension(path.substring(index + 1)));
 
-        TextView pathTo = (TextView) holder.itemView.findViewById(R.id.item_continue_path_to);
+        TextView pathTo = holder.itemView.findViewById(R.id.item_continue_path_to);
         pathTo.setText(path.substring(0, index));
     }
 
@@ -83,7 +83,7 @@ public abstract class DetailsListAdapter extends RecyclerView.Adapter<ViewHolder
     public abstract void removeItemFromDatSet(Playable playable);
 
     private static class DetailsListViewHolder extends ViewHolder {
-        public View view;
+        public final View view;
 
         DetailsListViewHolder(View view) {
             super(view);

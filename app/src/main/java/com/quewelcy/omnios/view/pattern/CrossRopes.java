@@ -8,9 +8,9 @@ import android.graphics.Rect;
 
 public class CrossRopes extends WallPattern {
 
-    private float angleStart;
-    private float angleAdd;
-    private int count;
+    private final float angleStart;
+    private final float angleAdd;
+    private final int count;
 
     public CrossRopes(int size) {
         super(size);

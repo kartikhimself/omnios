@@ -9,13 +9,13 @@ import android.util.AttributeSet;
 
 public class MusicIcon extends CircledIcon {
 
-    private Paint mPaint1 = new Paint();
-    private Paint mPaint2 = new Paint();
-    private Paint mPaint3 = new Paint();
+    private final Paint mPaint1 = new Paint();
+    private final Paint mPaint2 = new Paint();
+    private final Paint mPaint3 = new Paint();
 
-    private Path mPath1 = new Path();
-    private Path mPath2 = new Path();
-    private Path mPath3 = new Path();
+    private final Path mPath1 = new Path();
+    private final Path mPath2 = new Path();
+    private final Path mPath3 = new Path();
 
     public MusicIcon(Context context) {
         super(context);

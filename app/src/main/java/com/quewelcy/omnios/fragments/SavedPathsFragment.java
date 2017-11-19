@@ -25,7 +25,7 @@ public class SavedPathsFragment extends FixedWidthFragment {
     private TextView mNoFiles;
     private DetailsListAdapter mAdapter;
 
-    private OnItemClickListener mClickListener = new OnItemClickListener() {
+    private final OnItemClickListener mClickListener = new OnItemClickListener() {
         @Override
         public void onItemClick(int position) {
             if (position < 0) {
@@ -45,7 +45,7 @@ public class SavedPathsFragment extends FixedWidthFragment {
         }
     };
 
-    private SimpleCallback mSimpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+    private final SimpleCallback mSimpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
         @Override
         public boolean isLongPressDragEnabled() {
@@ -84,7 +84,7 @@ public class SavedPathsFragment extends FixedWidthFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
         View view = inflater.inflate(R.layout.fragment_details_list, container);
 
-        mNoFiles = (TextView) view.findViewById(R.id.fragment_details_list_empty);
+        mNoFiles = view.findViewById(R.id.fragment_details_list_empty);
         mNoFiles.setText(R.string.no_saved_paths);
         mAdapter = new DetailsListAdapter(getActivity()) {
             @Override
@@ -97,7 +97,7 @@ public class SavedPathsFragment extends FixedWidthFragment {
                 PrefHelper.removeFromPerms(getContext(), playable);
             }
         };
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_details_list_recycler);
+        mRecyclerView = view.findViewById(R.id.fragment_details_list_recycler);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), mClickListener));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(inflater.getContext()));

@@ -58,10 +58,10 @@ public class MeanderBgSurfaceView extends SurfaceView {
     private int mFigurePos = 0;
     private int mLinePos = 0;
 
-    private Paint mFgPaint = new Paint();
-    private Paint mBgPaint = new Paint();
-    private Path mPath = new Path();
-    private Timer mTimer = new Timer();
+    private final Paint mFgPaint = new Paint();
+    private final Paint mBgPaint = new Paint();
+    private final Path mPath = new Path();
+    private final Timer mTimer = new Timer();
 
     public MeanderBgSurfaceView(Context context) {
         super(context);
@@ -99,8 +99,7 @@ public class MeanderBgSurfaceView extends SurfaceView {
         setWillNotDraw(true);
     }
 
-
-    protected void create() {
+    private void create() {
         mBgPaint.setStyle(Paint.Style.FILL);
         mBgPaint.setColor(getColor());
 

@@ -2,11 +2,11 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion '26.0.0'
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "com.quewelcy.omnios"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 26
         return void
     }
@@ -26,8 +26,8 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.google.guava:guava:18.0'
-    compile 'com.google.code.gson:gson:2.4'
-    compile 'com.android.support:appcompat-v7:25.1.0'
-    compile 'com.android.support:recyclerview-v7:25.1.0'
-    compile "de.mrmaffen:vlc-android-sdk:1.9.8"
+    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:recyclerview-v7:26.1.0'
+    compile "de.mrmaffen:vlc-android-sdk:3.0.0"
 }

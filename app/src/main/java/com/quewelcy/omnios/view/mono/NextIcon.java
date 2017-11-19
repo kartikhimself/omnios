@@ -7,15 +7,15 @@ import android.graphics.Path;
 
 public class NextIcon extends WhiteIcon {
 
-    private Paint mPaint1 = new Paint();
-    private Paint mPaint2 = new Paint();
-    private Paint mPaint3 = new Paint();
-    private Paint mPaint4 = new Paint();
+    private final Paint mPaint1 = new Paint();
+    private final Paint mPaint2 = new Paint();
+    private final Paint mPaint3 = new Paint();
+    private final Paint mPaint4 = new Paint();
 
-    private Path mPath1 = new Path();
-    private Path mPath2 = new Path();
-    private Path mPath3 = new Path();
-    private Path mPath4 = new Path();
+    private final Path mPath1 = new Path();
+    private final Path mPath2 = new Path();
+    private final Path mPath3 = new Path();
+    private final Path mPath4 = new Path();
 
     public NextIcon(int size) {
         super(size);

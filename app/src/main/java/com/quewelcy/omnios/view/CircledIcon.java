@@ -12,7 +12,7 @@ import com.quewelcy.omnios.R;
 
 public abstract class CircledIcon extends View {
 
-    private Paint mPaint = new Paint();
+    private final Paint mPaint = new Paint();
     private int mX = 0;
     private int mY = 0;
     private int mRadius = 0;

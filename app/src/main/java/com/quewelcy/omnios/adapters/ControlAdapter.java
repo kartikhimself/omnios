@@ -23,8 +23,8 @@ public class ControlAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private static final int VIEW_TYPE_CLEAR_ALL = 0;
 
-    private LayoutInflater mInflater;
-    private List<String> mDataSet;
+    private final LayoutInflater mInflater;
+    private final List<String> mDataSet;
 
     public ControlAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
@@ -47,7 +47,7 @@ public class ControlAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        TextView title = (TextView) holder.itemView.findViewById(R.id.item_control_title);
+        TextView title = holder.itemView.findViewById(R.id.item_control_title);
         title.setText(mDataSet.get(position));
     }
 
@@ -66,7 +66,7 @@ public class ControlAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     private static class SettingsViewHolder extends RecyclerView.ViewHolder {
-        public View view;
+        public final View view;
 
         SettingsViewHolder(View view) {
             super(view);

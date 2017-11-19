@@ -21,9 +21,9 @@ import static android.support.v4.content.ContextCompat.getColor;
 
 public class FolderAdapter extends Adapter<ViewHolder> {
 
-    private LayoutInflater mInflater;
-    private List<File> mFiles;
-    private Context mContext;
+    private final LayoutInflater mInflater;
+    private final List<File> mFiles;
+    private final Context mContext;
 
     public FolderAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
@@ -38,8 +38,8 @@ public class FolderAdapter extends Adapter<ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        RelativeLayout bg = (RelativeLayout) holder.itemView.findViewById(R.id.item_folder_bg);
-        TextView title = (TextView) holder.itemView.findViewById(R.id.item_folder_title);
+        RelativeLayout bg = holder.itemView.findViewById(R.id.item_folder_bg);
+        TextView title = holder.itemView.findViewById(R.id.item_folder_title);
         View musicIcon = holder.itemView.findViewById(R.id.item_folder_music_icon);
         View videoIcon = holder.itemView.findViewById(R.id.item_folder_video_icon);
         View folderIcon = holder.itemView.findViewById(R.id.item_folder_folder_icon);
@@ -107,7 +107,7 @@ public class FolderAdapter extends Adapter<ViewHolder> {
     }
 
     private static class ReViewHolder extends ViewHolder {
-        public View view;
+        public final View view;
 
         ReViewHolder(View view) {
             super(view);

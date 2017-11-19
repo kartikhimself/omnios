@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/navigation_normal_cl"
     android:clickable="true"
+    android:focusable="true"
     android:orientation="horizontal">
 
     <TextView

@@ -8,9 +8,9 @@ import android.graphics.Rect;
 
 public class PaperStack extends WallPattern {
 
-    private float angleStart;
-    private float angleAdd;
-    private int count;
+    private final float angleStart;
+    private final float angleAdd;
+    private final int count;
 
     public PaperStack(int width, int height) {
         super(width, height);

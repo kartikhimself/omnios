@@ -78,9 +78,9 @@ public class OmniosActivity extends AppCompatActivity implements ServiceCommunic
     private MenuItem mMenuRemember;
     private MenuItem mMenuClear;
 
-    private Set<String> mRequestedPermissions = new HashSet<>();
+    private final Set<String> mRequestedPermissions = new HashSet<>();
 
-    private OnMenuItemClickListener mMenuListener = new OnMenuItemClickListener() {
+    private final OnMenuItemClickListener mMenuListener = new OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             switch (item.getItemId()) {
@@ -110,7 +110,7 @@ public class OmniosActivity extends AppCompatActivity implements ServiceCommunic
         }
     };
 
-    private OnItemClickListener mControlClickListener = new OnItemClickListener() {
+    private final OnItemClickListener mControlClickListener = new OnItemClickListener() {
         @Override
         public void onItemClick(int position) {
             if (position < 0) {
@@ -139,7 +139,7 @@ public class OmniosActivity extends AppCompatActivity implements ServiceCommunic
 
         }
     };
-    private ServiceConnection mConnection = new ServiceConnection() {
+    private final ServiceConnection mConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
             OmniosService.OmniosBinder binder = (OmniosService.OmniosBinder) service;
@@ -152,7 +152,7 @@ public class OmniosActivity extends AppCompatActivity implements ServiceCommunic
             mService = null;
         }
     };
-    private Handler mHandler = new Handler(new Callback() {
+    private final Handler mHandler = new Handler(new Callback() {
         @Override
         public boolean handleMessage(Message msg) {
             mFolderFragment.setTime(
@@ -204,7 +204,7 @@ public class OmniosActivity extends AppCompatActivity implements ServiceCommunic
         getWindow().setFlags(FLAG_HARDWARE_ACCELERATED, FLAG_HARDWARE_ACCELERATED);
         setContentView(R.layout.activity_omnios);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.activity_omnios_drawer_layout);
+        mDrawerLayout = findViewById(R.id.activity_omnios_drawer_layout);
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         mSavedPathsFragment = (SavedPathsFragment) fragmentManager.findFragmentById(R.id.activity_omnios_saved);
@@ -221,13 +221,13 @@ public class OmniosActivity extends AppCompatActivity implements ServiceCommunic
 
         mControlAdapter = new ControlAdapter(this);
 
-        RecyclerView controlDrawer = (RecyclerView) findViewById(R.id.control_drawer);
+        RecyclerView controlDrawer = findViewById(R.id.control_drawer);
         controlDrawer.setHasFixedSize(true);
         controlDrawer.addOnItemTouchListener(new RecyclerItemClickListener(this, mControlClickListener));
         controlDrawer.setLayoutManager(new LinearLayoutManager(this));
         controlDrawer.setAdapter(mControlAdapter);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             if (getSupportActionBar() != null) {
@@ -240,7 +240,6 @@ public class OmniosActivity extends AppCompatActivity implements ServiceCommunic
             mDrawerLayout.addDrawerListener(mDrawerToggle);
             toolbar.inflateMenu(R.menu.activity_omnios);
         }
-        startService(new Intent(this, OmniosService.class));
     }
 
     @Override
@@ -369,6 +368,11 @@ public class OmniosActivity extends AppCompatActivity implements ServiceCommunic
 
     @Override
     public void play(Playable playable) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(new Intent(this, OmniosService.class));
+        } else {
+            startService(new Intent(this, OmniosService.class));
+        }
         if (mService != null) {
             mService.play(playable);
         }
@@ -435,6 +439,9 @@ public class OmniosActivity extends AppCompatActivity implements ServiceCommunic
         mReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(final Context context, final Intent intent) {
+                if (intent == null || intent.getAction() == null) {
+                    return;
+                }
                 switch (intent.getAction()) {
                     case Actions.INVALIDATE:
                         if (mFolderFragment.isVisible()) {

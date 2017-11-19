@@ -1,5 +1,6 @@
 package com.quewelcy.omnios;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -60,7 +61,6 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.READ_PHONE_STATE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.Build.VERSION.SDK_INT;
-import static android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN;
 import static android.view.WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
 import static com.quewelcy.omnios.Configures.DirFileComparator.NAME_SORT;
 import static com.quewelcy.omnios.Configures.millisToTimeString;
@@ -101,9 +101,9 @@ public class VideoActivity extends AppCompatActivity
     private Timer mSeekTimer;
     private TimerTask mSeekTask;
 
-    private Set<String> requestedPermissions = new HashSet<>();
+    private final Set<String> requestedPermissions = new HashSet<>();
 
-    private CountDownTimer mHideTimer = new CountDownTimer(3000, 3000) {
+    private final CountDownTimer mHideTimer = new CountDownTimer(3000, 3000) {
         @Override
         public void onTick(long millisUntilFinished) {
 
@@ -115,7 +115,7 @@ public class VideoActivity extends AppCompatActivity
         }
     };
 
-    private MediaPlayer.EventListener mPlayerListener = new MediaPlayer.EventListener() {
+    private final MediaPlayer.EventListener mPlayerListener = new MediaPlayer.EventListener() {
         @Override
         public void onEvent(MediaPlayer.Event event) {
             switch (event.type) {
@@ -133,14 +133,14 @@ public class VideoActivity extends AppCompatActivity
             }
         }
     };
-    private OnClickListener mPauseListener = new OnClickListener() {
+    private final OnClickListener mPauseListener = new OnClickListener() {
         public void onClick(View v) {
             doPauseResume();
             updatePlayPauseState();
         }
     };
 
-    private OnSeekBarChangeListener mSeekListener = new OnSeekBarChangeListener() {
+    private final OnSeekBarChangeListener mSeekListener = new OnSeekBarChangeListener() {
         @Override
         public void onStartTrackingTouch(SeekBar bar) {
             mDragging = true;
@@ -164,12 +164,13 @@ public class VideoActivity extends AppCompatActivity
         }
     };
 
-    private View.OnTouchListener mTripleTapListener = new View.OnTouchListener() {
-        Handler handler = new Handler();
+    private final View.OnTouchListener mTripleTapListener = new View.OnTouchListener() {
+        final Handler handler = new Handler();
         int numberOfTaps = 0;
         long lastTapTimeMs = 0;
         long touchDownMs = 0;
 
+        @SuppressLint("ClickableViewAccessibility")
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             switch (event.getAction()) {
@@ -203,7 +204,7 @@ public class VideoActivity extends AppCompatActivity
         }
     };
 
-    private OnClickListener mControlClickListener = new OnClickListener() {
+    private final OnClickListener mControlClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
             if (mIsLocked) {
@@ -225,13 +226,13 @@ public class VideoActivity extends AppCompatActivity
         getWindow().setFlags(FLAG_HARDWARE_ACCELERATED, FLAG_HARDWARE_ACCELERATED);
         setContentView(R.layout.activity_video);
 
-        mSpin = (ProgressBar) findViewById(R.id.activity_video_progress);
+        mSpin = findViewById(R.id.activity_video_progress);
         mSpin.setVisibility(View.VISIBLE);
 
-        mPauseButton = (ImageView) findViewById(R.id.activity_video_pause);
+        mPauseButton = findViewById(R.id.activity_video_pause);
         mPauseButton.setOnClickListener(mPauseListener);
 
-        mSeek = (SeekBar) findViewById(R.id.activity_video_seek);
+        mSeek = findViewById(R.id.activity_video_seek);
         mSeek.setOnSeekBarChangeListener(mSeekListener);
 
         View controlBox = findViewById(R.id.activity_video_control_box);
@@ -239,10 +240,10 @@ public class VideoActivity extends AppCompatActivity
         controlBox.setOnClickListener(mControlClickListener);
 
         mSeekBox = findViewById(R.id.activity_video_seek_box);
-        mCurTime = (TextView) findViewById(R.id.activity_video_cur_time);
-        mEndTime = (TextView) findViewById(R.id.activity_video_end_time);
-        mSurfaceView = (MeanderBgSurfaceView) findViewById(R.id.activity_video_surface);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mCurTime = findViewById(R.id.activity_video_cur_time);
+        mEndTime = findViewById(R.id.activity_video_end_time);
+        mSurfaceView = findViewById(R.id.activity_video_surface);
+        mToolbar = findViewById(R.id.toolbar);
 
         mUrl = Configures.getRealPathFromURI(this, getIntent().getData());
         if (mUrl == null || mUrl.isEmpty()) {
@@ -385,17 +386,13 @@ public class VideoActivity extends AppCompatActivity
     }
 
     private void requestFullScreen() {
-        if (VERSION.SDK_INT < VERSION_CODES.JELLY_BEAN) {
-            getWindow().setFlags(FLAG_FULLSCREEN, FLAG_FULLSCREEN);
-        } else {
-            int flag = View.SYSTEM_UI_FLAG_FULLSCREEN;
-            View decorView = getWindow().getDecorView();
-            if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-                flag |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-                flag |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-            }
-            decorView.setSystemUiVisibility(flag);
+        int flag = View.SYSTEM_UI_FLAG_FULLSCREEN;
+        View decorView = getWindow().getDecorView();
+        if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+            flag |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            flag |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
         }
+        decorView.setSystemUiVisibility(flag);
     }
 
     private void toggleLock() {
@@ -617,11 +614,6 @@ public class VideoActivity extends AppCompatActivity
 
     @Override
     public void onSurfacesDestroyed(IVLCVout vlcVOut) {
-
-    }
-
-    @Override
-    public void onHardwareAccelerationError(IVLCVout vlcVOut) {
 
     }
 }

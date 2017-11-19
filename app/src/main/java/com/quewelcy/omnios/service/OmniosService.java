@@ -1,8 +1,5 @@
 package com.quewelcy.omnios.service;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -12,26 +9,23 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.media.MediaMetadataCompat;
-import android.support.v4.media.session.MediaSessionCompat;
-import android.support.v4.media.session.PlaybackStateCompat;
-import android.support.v7.app.NotificationCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
 
 import com.quewelcy.omnios.Configures;
-import com.quewelcy.omnios.OmniosActivity;
-import com.quewelcy.omnios.R;
 import com.quewelcy.omnios.data.Playable;
 import com.quewelcy.omnios.data.PrefHelper;
 import com.quewelcy.omnios.receiver.MusicIntentReceiver;
+import com.quewelcy.omnios.service.notification.NotificationHelper;
+import com.quewelcy.omnios.service.notification.OreoNotificationHelper;
+import com.quewelcy.omnios.service.session.OreoSessionHelper;
+import com.quewelcy.omnios.service.session.SessionHelper;
 import com.quewelcy.omnios.sound.StreamAudioPlayer;
-import com.quewelcy.omnios.view.pattern.CrossRopes;
-import com.quewelcy.omnios.view.pattern.PaperStack;
+import com.quewelcy.omnios.view.pattern.Mosaic;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -41,15 +35,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import static android.app.PendingIntent.FLAG_CANCEL_CURRENT;
 import static com.quewelcy.omnios.Configures.Actions;
 import static com.quewelcy.omnios.Configures.DirFileComparator.NAME_SORT;
 import static com.quewelcy.omnios.Configures.Extras;
 
 public class OmniosService extends Service implements StreamAudioPlayer.StreamListener {
 
-    private static final int NOTIFIER_ID = 1;
-    private static final String OMNIOS_SERVICE_TAG = "OMNIOS_SERVICE_TAG";
     private static final FileFilter MP3_FILTER = new FileFilter() {
         @Override
         public boolean accept(File f) {
@@ -61,14 +52,13 @@ public class OmniosService extends Service implements StreamAudioPlayer.StreamLi
     private final Queue<String> queue = new LinkedList<>();
 
     private PhoneStateListener mPhoneStateListener;
-    private MediaSessionCompat mSession;
     private BroadcastReceiver mReceiver;
     private StreamAudioPlayer mPlayer;
     private TelephonyManager mTelephonyManager;
-    private ComponentName mMediaButtonReceiverComponent;
     private AudioManager mAudioManager;
     private Playable mCurrentPlayable;
-    private NotificationManager mNotificationManager;
+    private NotificationHelper mNotificationHelper;
+    private SessionHelper mSessionHelper;
 
     public Bundle getCurrentTime() {
         mBundle.clear();
@@ -91,11 +81,18 @@ public class OmniosService extends Service implements StreamAudioPlayer.StreamLi
     public void onCreate() {
         super.onCreate();
         mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-        mMediaButtonReceiverComponent = new ComponentName(this, MusicIntentReceiver.class);
-        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         mCurrentPlayable = null;
         registerBroadcastReceiver();
         registerPhoneStateReceiver();
+
+        ComponentName mediaButtonReceiver = new ComponentName(this, MusicIntentReceiver.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mNotificationHelper = new OreoNotificationHelper(this);
+            mSessionHelper = new OreoSessionHelper(this, mediaButtonReceiver);
+        } else {
+            mNotificationHelper = new NotificationHelper(this);
+            mSessionHelper = new SessionHelper(this, mediaButtonReceiver);
+        }
     }
 
     @Override
@@ -130,9 +127,7 @@ public class OmniosService extends Service implements StreamAudioPlayer.StreamLi
         abandonFocus();
         unregisterReceiver(mReceiver);
         unregisterPhoneStateReceiver();
-        if (mSession != null) {
-            mSession.release();
-        }
+        mSessionHelper.release();
     }
 
     @Override
@@ -145,7 +140,12 @@ public class OmniosService extends Service implements StreamAudioPlayer.StreamLi
 
     @Override
     public void onPlaybackStart() {
-        showNotifier();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            ((OreoNotificationHelper) mNotificationHelper).showNotifier(mCurrentPlayable,
+                    ((OreoSessionHelper) mSessionHelper).getOreoSessionToken());
+        } else {
+            mNotificationHelper.showNotifier(mCurrentPlayable, mSessionHelper.getSessionToken());
+        }
     }
 
     @Override
@@ -186,8 +186,10 @@ public class OmniosService extends Service implements StreamAudioPlayer.StreamLi
         mReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(final Context context, final Intent intent) {
-                String action = intent.getAction();
-                switch (action) {
+                if (intent == null || intent.getAction() == null) {
+                    return;
+                }
+                switch (intent.getAction()) {
                     case Intent.ACTION_HEADSET_PLUG:
                         if (intent.getIntExtra("state", 0) == 0) {
                             stopPlayback();
@@ -222,9 +224,7 @@ public class OmniosService extends Service implements StreamAudioPlayer.StreamLi
     }
 
     public void stopPlayback() {
-        if (mSession != null) {
-            mSession.release();
-        }
+        mSessionHelper.release();
         if (mCurrentPlayable == null) {
             return;
         }
@@ -238,40 +238,23 @@ public class OmniosService extends Service implements StreamAudioPlayer.StreamLi
         mPlayer = null;
 
         setPlaybackState(PlayState.PAUSE, "");
-        dismissNotifier();
+        mNotificationHelper.dismissNotifier();
     }
 
     private void setPlaybackState(PlayState playState, String title) {
-        if (mSession == null) {
-            return;
-        }
         if (title != null && !title.isEmpty()) {
             DisplayMetrics dm = getResources().getDisplayMetrics();
-            Bitmap splashBitmap = new PaperStack(dm.widthPixels / 2, dm.heightPixels / 2).getBitmap();
-            MediaMetadataCompat.Builder metadata = new MediaMetadataCompat.Builder()
-                    .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
-                    .putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, splashBitmap);
-            mSession.setMetadata(metadata.build());
+            Bitmap splashBitmap = new Mosaic(dm.widthPixels / 2, dm.heightPixels / 2).getBitmap();
+            mSessionHelper.setMetadata(title, splashBitmap);
         } else {
-            mSession.setMetadata(new MediaMetadataCompat.Builder().build());
+            mSessionHelper.setMetadata();
         }
-        PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder();
-        stateBuilder.setActions(
-                PlaybackStateCompat.ACTION_PLAY_PAUSE
-                        | PlaybackStateCompat.ACTION_SKIP_TO_NEXT
-                        | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS);
-        stateBuilder.setState(playState == PlayState.PLAY ? PlaybackStateCompat.STATE_PLAYING : PlaybackStateCompat.STATE_PAUSED, 10L, 1F);
-        mSession.setPlaybackState(stateBuilder.build());
+        mSessionHelper.setPlaybackState(playState);
     }
 
     private void registerMedia(String title) {
         requestFocus();
-        mSession = new MediaSessionCompat(
-                OmniosService.this,
-                OMNIOS_SERVICE_TAG,
-                mMediaButtonReceiverComponent, null);
-        mSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
-        mSession.setActive(true);
+        mSessionHelper.registerMedia();
         setPlaybackState(PlayState.PLAY, title);
     }
 
@@ -281,51 +264,6 @@ public class OmniosService extends Service implements StreamAudioPlayer.StreamLi
 
     private void abandonFocus() {
         mAudioManager.abandonAudioFocus(null);
-    }
-
-    private void dismissNotifier() {
-        stopForeground(true);
-        mNotificationManager.cancelAll();
-    }
-
-    public void showNotifier() {
-        dismissNotifier();
-
-        if (mCurrentPlayable == null) {
-            return;
-        }
-
-        try {
-            Intent intentPrev = new Intent(getApplicationContext(), OmniosService.class);
-            intentPrev.setAction(Actions.PREV);
-
-            Intent intentPp = new Intent(this, OmniosService.class);
-            intentPp.setAction(Actions.PLAY_STATE);
-
-            Intent intentNext = new Intent(this, OmniosService.class);
-            intentNext.setAction(Actions.NEXT);
-
-            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
-            notificationBuilder.setContentTitle(mCurrentPlayable.getTitle())
-                    .setSmallIcon(R.drawable.ic_launcher_white)
-                    .setContentText(getString(R.string.app_name))
-                    .setAutoCancel(false)
-                    .setLargeIcon(new CrossRopes(300).getBitmap())
-                    .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, OmniosActivity.class), FLAG_CANCEL_CURRENT))
-                    .addAction(android.R.drawable.ic_media_previous, getString(R.string.notification_prev), PendingIntent.getService(getApplicationContext(), 0, intentPrev, FLAG_CANCEL_CURRENT))
-                    .addAction(android.R.drawable.ic_media_pause, getString(R.string.notification_stop), PendingIntent.getService(getApplicationContext(), 0, intentPp, FLAG_CANCEL_CURRENT))
-                    .addAction(android.R.drawable.ic_media_next, getString(R.string.notification_next), PendingIntent.getService(getApplicationContext(), 0, intentNext, FLAG_CANCEL_CURRENT))
-                    .setStyle(new NotificationCompat.MediaStyle()
-                            .setMediaSession(mSession.getSessionToken())
-                            .setShowActionsInCompactView(0, 1, 2));
-
-            Notification notification;
-            notification = notificationBuilder.build();
-            notification.flags |= Notification.FLAG_NO_CLEAR;
-            startForeground(NOTIFIER_ID, notification);
-        } catch (Exception e) {
-            Log.e("audio_error", "can't show notifier", e);
-        }
     }
 
     private void sendInvalidateEvent() {
@@ -449,7 +387,7 @@ public class OmniosService extends Service implements StreamAudioPlayer.StreamLi
         PREV, NEXT
     }
 
-    private enum PlayState {
+    public enum PlayState {
         PLAY, PAUSE
     }
 

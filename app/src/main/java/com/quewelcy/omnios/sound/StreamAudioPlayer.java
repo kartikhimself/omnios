@@ -14,7 +14,7 @@ public class StreamAudioPlayer implements OnCompletionListener, OnPreparedListen
 
     private MediaPlayer mMediaPlayer;
     private StreamListener mListener;
-    private Context mContext;
+    private final Context mContext;
     private boolean mIsCancelled;
     private int mPosition;
 

@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 public class FixedWidthFragment extends Fragment {
 
-    protected RecyclerView mRecyclerView;
+    RecyclerView mRecyclerView;
 
     @Override
     public void onActivityCreated(Bundle state) {

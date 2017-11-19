@@ -3,6 +3,7 @@ package com.quewelcy.omnios.receiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.view.KeyEvent;
 
 import com.quewelcy.omnios.Configures;
@@ -19,26 +20,35 @@ public class MusicIntentReceiver extends BroadcastReceiver {
             if (keyEvent == null || keyEvent.getAction() != KeyEvent.ACTION_DOWN) {
                 return;
             }
+            String action = null;
             switch (keyEvent.getKeyCode()) {
                 case KeyEvent.KEYCODE_HEADSETHOOK:
                 case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
-                    context.startService(new Intent(Configures.Actions.PLAY_STATE));
+                    action = Configures.Actions.PLAY_STATE;
                     break;
                 case KeyEvent.KEYCODE_MEDIA_PLAY:
-                    context.startService(new Intent(Configures.Actions.PLAY_STATE));
+                    action = Configures.Actions.PLAY_STATE;
                     break;
                 case KeyEvent.KEYCODE_MEDIA_PAUSE:
-                    context.startService(new Intent(Configures.Actions.PLAY_STATE));
+                    action = Configures.Actions.PLAY_STATE;
                     break;
                 case KeyEvent.KEYCODE_MEDIA_STOP:
-                    context.startService(new Intent(Configures.Actions.PLAY_STATE));
+                    action = Configures.Actions.PLAY_STATE;
                     break;
                 case KeyEvent.KEYCODE_MEDIA_NEXT:
-                    context.startService(new Intent(Configures.Actions.NEXT));
+                    action = Configures.Actions.NEXT;
                     break;
                 case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
-                    context.startService(new Intent(Configures.Actions.PREV));
+                    action = Configures.Actions.PREV;
                     break;
+            }
+            if (action == null) {
+                return;
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(new Intent(action));
+            } else {
+                context.startService(new Intent(action));
             }
         }
     }

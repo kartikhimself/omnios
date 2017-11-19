@@ -7,12 +7,12 @@ import android.graphics.Path;
 
 public class BookWhiteIcon extends WhiteIcon {
 
-    private Paint mPaint = new Paint();
+    private final Paint mPaint = new Paint();
 
-    private Path mPath1 = new Path();
-    private Path mPath2 = new Path();
-    private Path mPath3 = new Path();
-    private Path mPath4 = new Path();
+    private final Path mPath1 = new Path();
+    private final Path mPath2 = new Path();
+    private final Path mPath3 = new Path();
+    private final Path mPath4 = new Path();
 
     public BookWhiteIcon(int size) {
         super(size);

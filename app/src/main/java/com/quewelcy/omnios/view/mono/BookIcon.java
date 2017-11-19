@@ -11,15 +11,15 @@ import com.quewelcy.omnios.view.CircledIcon;
 
 public class BookIcon extends CircledIcon {
 
-    private Paint mPaint1 = new Paint();
-    private Paint mPaint2 = new Paint();
-    private Paint mPaint3 = new Paint();
-    private Paint mPaint4 = new Paint();
+    private final Paint mPaint1 = new Paint();
+    private final Paint mPaint2 = new Paint();
+    private final Paint mPaint3 = new Paint();
+    private final Paint mPaint4 = new Paint();
 
-    private Path mPath1 = new Path();
-    private Path mPath2 = new Path();
-    private Path mPath3 = new Path();
-    private Path mPath4 = new Path();
+    private final Path mPath1 = new Path();
+    private final Path mPath2 = new Path();
+    private final Path mPath3 = new Path();
+    private final Path mPath4 = new Path();
 
     public BookIcon(Context context) {
         super(context);
@@ -68,7 +68,7 @@ public class BookIcon extends CircledIcon {
     }
 
     @Override
-    public void buildPath() {
+    protected void buildPath() {
         super.buildPath();
 
         int w = getWidth();

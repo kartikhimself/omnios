@@ -138,7 +138,7 @@ public class PrefHelper {
         savePrefs(c);
     }
 
-    public static void addPathToPerms(Context c, Playable playable) {
+    private static void addPathToPerms(Context c, Playable playable) {
         if (Configures.isMusic(playable.getPath()) && !playable.isDefault()) {
             getPerms(c).put(playable.getPath(), playable);
         }
@@ -161,7 +161,7 @@ public class PrefHelper {
         return qPrefs.getPerms();
     }
 
-    public static Playable getPerm(Context c, String path) {
+    private static Playable getPerm(Context c, String path) {
         validatePrefs(c);
         return qPrefs.getPerm(path);
     }

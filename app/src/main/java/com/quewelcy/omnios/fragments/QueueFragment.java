@@ -28,7 +28,7 @@ public class QueueFragment extends FixedWidthFragment {
     private DetailsListAdapter mAdapter;
     private ServiceCommunicator mServiceCommunicator;
 
-    private SimpleCallback mSimpleItemTouchCallback = new SimpleCallback(0, LEFT | START | RIGHT | END) {
+    private final SimpleCallback mSimpleItemTouchCallback = new SimpleCallback(0, LEFT | START | RIGHT | END) {
 
         @Override
         public boolean isLongPressDragEnabled() {
@@ -67,7 +67,7 @@ public class QueueFragment extends FixedWidthFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
         View view = inflater.inflate(R.layout.fragment_details_list, container);
 
-        mNoFiles = (TextView) view.findViewById(R.id.fragment_details_list_empty);
+        mNoFiles = view.findViewById(R.id.fragment_details_list_empty);
         mNoFiles.setText(R.string.queue_is_empty);
         mAdapter = new DetailsListAdapter(getActivity()) {
             @Override
@@ -80,7 +80,7 @@ public class QueueFragment extends FixedWidthFragment {
                 mServiceCommunicator.removeFromQueue(playable.getPath());
             }
         };
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_details_list_recycler);
+        mRecyclerView = view.findViewById(R.id.fragment_details_list_recycler);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity()));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(inflater.getContext()));

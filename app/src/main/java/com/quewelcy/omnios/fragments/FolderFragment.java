@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -52,13 +51,13 @@ public class FolderFragment extends FixedWidthFragment {
     private Context mContext;
     private SeekBar mSeek;
 
-    private FileFilter mMp3VideoDirFilter = new FileFilter() {
+    private final FileFilter mMp3VideoDirFilter = new FileFilter() {
         @Override
         public boolean accept(File f) {
             return f.isDirectory() || (f.isFile() && isFormatSupported(f.getName().toLowerCase()));
         }
     };
-    private OnSeekBarChangeListener mSeekListener = new OnSeekBarChangeListener() {
+    private final OnSeekBarChangeListener mSeekListener = new OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             if (mServiceCommunicator != null && fromUser) {
@@ -76,7 +75,7 @@ public class FolderFragment extends FixedWidthFragment {
 
         }
     };
-    private OnClickListener mNavClickListener = new OnClickListener() {
+    private final OnClickListener mNavClickListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
             String path = (String) v.getTag();
@@ -85,7 +84,7 @@ public class FolderFragment extends FixedWidthFragment {
             }
         }
     };
-    private OnItemClickListener mClickListener = new OnItemClickListener() {
+    private final OnItemClickListener mClickListener = new OnItemClickListener() {
         @Override
         public void onItemClick(int position) {
             if (position < 0) {
@@ -103,8 +102,10 @@ public class FolderFragment extends FixedWidthFragment {
             if (selected == null) {
                 return;
             }
-            mServiceCommunicator.addToQueue(selected.getAbsolutePath());
-            Toast.makeText(mContext, R.string.added_to_queue, Toast.LENGTH_SHORT).show();
+            if (Configures.isMusic(selected.getAbsolutePath())) {
+                mServiceCommunicator.addToQueue(selected.getAbsolutePath());
+                Toast.makeText(mContext, R.string.added_to_queue, Toast.LENGTH_SHORT).show();
+            }
         }
     };
 
@@ -131,15 +132,15 @@ public class FolderFragment extends FixedWidthFragment {
         View view = inflater.inflate(R.layout.fragment_folder, container);
         mContext = inflater.getContext();
         mAdapter = new FolderAdapter(inflater.getContext());
-        mPathScroller = (HorizontalScrollView) view.findViewById(R.id.fragment_folder_path_scroller);
-        mPath = (LinearLayout) view.findViewById(R.id.fragment_folder_path);
-        mNoFiles = (TextView) view.findViewById(R.id.fragment_folder_empty);
-        mTimeCur = (TextView) view.findViewById(R.id.fragment_folder_cur_time);
-        mTimeEnd = (TextView) view.findViewById(R.id.fragment_folder_end_time);
-        mSeek = (SeekBar) view.findViewById(R.id.fragment_folder_seek);
+        mPathScroller = view.findViewById(R.id.fragment_folder_path_scroller);
+        mPath = view.findViewById(R.id.fragment_folder_path);
+        mNoFiles = view.findViewById(R.id.fragment_folder_empty);
+        mTimeCur = view.findViewById(R.id.fragment_folder_cur_time);
+        mTimeEnd = view.findViewById(R.id.fragment_folder_end_time);
+        mSeek = view.findViewById(R.id.fragment_folder_seek);
         mSeek.setOnSeekBarChangeListener(mSeekListener);
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_recycler_folder_list);
+        mRecyclerView = view.findViewById(R.id.fragment_recycler_folder_list);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), mClickListener));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(inflater.getContext()));
@@ -223,7 +224,7 @@ public class FolderFragment extends FixedWidthFragment {
             View v = View.inflate(mContext, R.layout.item_navigation, null);
             mPath.addView(v);
 
-            TextView nav = (TextView) v.findViewById(R.id.item_navigation);
+            TextView nav = v.findViewById(R.id.item_navigation);
             nav.setText(paths[i]);
             if (i == paths.length - 1) {
                 nav.setBackgroundResource(android.R.color.transparent);

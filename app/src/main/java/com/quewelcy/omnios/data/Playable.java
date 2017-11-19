@@ -30,7 +30,7 @@ public class Playable implements Parcelable {
         this.position = position;
     }
 
-    public Playable(Parcel in) {
+    private Playable(Parcel in) {
         title = in.readString();
         path = in.readString();
         position = in.readInt();

@@ -10,9 +10,9 @@ import java.io.ByteArrayOutputStream;
 
 public abstract class WhiteIcon {
 
-    protected int width;
-    protected int height;
-    protected int color = 0xAAFFFFFF;
+    final int width;
+    final int height;
+    final int color = 0xAAFFFFFF;
 
     WhiteIcon(int size) {
         this(size, size);
