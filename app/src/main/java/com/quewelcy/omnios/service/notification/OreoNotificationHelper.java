@@ -16,7 +16,6 @@ import com.quewelcy.omnios.OmniosActivity;
 import com.quewelcy.omnios.R;
 import com.quewelcy.omnios.data.Playable;
 import com.quewelcy.omnios.service.OmniosService;
-import com.quewelcy.omnios.view.pattern.CrossRopes;
 
 import static android.app.PendingIntent.FLAG_CANCEL_CURRENT;
 
@@ -56,7 +55,6 @@ public class OreoNotificationHelper extends NotificationHelper {
                     .setColor(getColor(R.color.primary))
                     .setSmallIcon(R.drawable.ic_launcher_white)
                     .setAutoCancel(false)
-                    .setLargeIcon(new CrossRopes(300).getBitmap())
                     .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(getApplicationContext(), OmniosActivity.class), FLAG_CANCEL_CURRENT))
                     .addAction(android.R.drawable.ic_media_previous, getString(R.string.notification_prev), PendingIntent.getService(getApplicationContext(), 0, intentPrev, FLAG_CANCEL_CURRENT))
                     .addAction(android.R.drawable.ic_media_pause, getString(R.string.notification_stop), PendingIntent.getService(getApplicationContext(), 0, intentPp, FLAG_CANCEL_CURRENT))
