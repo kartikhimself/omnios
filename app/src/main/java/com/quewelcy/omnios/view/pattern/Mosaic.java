@@ -9,7 +9,7 @@ import android.graphics.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Mosaic extends WallPattern {
+public class Mosaic extends MosaicPattern {
 
     private static final int STEP = 50;
 

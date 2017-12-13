@@ -8,7 +8,7 @@ import static java.util.Arrays.asList;
 
 abstract class WallPattern {
 
-    private static final List<List<Integer>> COLORS = asList(
+    private static final List<List<Integer>> WALL_COLORS = asList(
             asList(0xFF247BA0, 0xFF70C1B3, 0xFFB2DBBF, 0xFFF3FFBD, 0xFFFF1654),
             asList(0xFFFFCDB2, 0xFFFFB4A2, 0xFFE5989B, 0xFFB5838D, 0xFF6D6875),
             asList(0xFF50514F, 0xFFF25F5C, 0xFFFFE066, 0xFF247BA0, 0xFF70C1B3),
@@ -37,6 +37,7 @@ abstract class WallPattern {
             asList(0xFF114B5F, 0xFF028090, 0xFFE4FDE1, 0xFF456990, 0xFFF45B69),
             asList(0xFFFFFFFF, 0xFF00171F, 0xFF003459, 0xFF007EA7, 0xFF00A8E8),
             asList(0xFFED6A5A, 0xFFF4F1BB, 0xFF9BC1BC, 0xFF5CA4A9, 0xFFE6EBE0));
+
     final int width;
     final int height;
     private int position;
@@ -54,17 +55,21 @@ abstract class WallPattern {
 
     int chooseSchemeAndGetColor() {
         do {
-            scheme = (int) (Math.random() * COLORS.size());
-        } while (scheme < 0 || scheme >= COLORS.size());
+            scheme = (int) (Math.random() * getColorSchemes().size());
+        } while (scheme < 0 || scheme >= getColorSchemes().size());
         position = 0;
         return getNextColor();
     }
 
     int getNextColor() {
-        if (position >= COLORS.get(scheme).size()) {
+        if (position >= getColorSchemes().get(scheme).size()) {
             position = 0;
         }
-        return COLORS.get(scheme).get(position++);
+        return getColorSchemes().get(scheme).get(position++);
+    }
+
+    protected List<List<Integer>> getColorSchemes() {
+        return WALL_COLORS;
     }
 
     public abstract Bitmap getBitmap();
