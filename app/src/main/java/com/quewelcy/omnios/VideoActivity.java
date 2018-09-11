@@ -9,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -222,7 +221,6 @@ public class VideoActivity extends AppCompatActivity
     public void onCreate(Bundle state) {
         super.onCreate(state);
         supportRequestWindowFeature(AppCompatDelegate.FEATURE_SUPPORT_ACTION_BAR_OVERLAY);
-        requestFullScreen();
         getWindow().setFlags(FLAG_HARDWARE_ACCELERATED, FLAG_HARDWARE_ACCELERATED);
         setContentView(R.layout.activity_video);
 
@@ -375,7 +373,6 @@ public class VideoActivity extends AppCompatActivity
                 mHideTimer.start();
             } else {
                 mSurfaceView.showSplash();
-                requestFullScreen();
             }
             if (getIntent().getBooleanExtra(Extras.LOCK_ON_START, false)) {
                 toggleLock();
@@ -383,16 +380,6 @@ public class VideoActivity extends AppCompatActivity
         } catch (Exception e) {
             Toast.makeText(this, "Error creating player!", Toast.LENGTH_LONG).show();
         }
-    }
-
-    private void requestFullScreen() {
-        int flag = View.SYSTEM_UI_FLAG_FULLSCREEN;
-        View decorView = getWindow().getDecorView();
-        if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
-            flag |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-            flag |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-        }
-        decorView.setSystemUiVisibility(flag);
     }
 
     private void toggleLock() {
