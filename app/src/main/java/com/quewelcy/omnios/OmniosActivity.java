@@ -60,6 +60,7 @@ import static com.quewelcy.omnios.Configures.Actions;
 import static com.quewelcy.omnios.Configures.Extras;
 import static com.quewelcy.omnios.adapters.ControlAdapter.A_BIT_LEFT;
 import static com.quewelcy.omnios.adapters.ControlAdapter.A_BIT_RIGHT;
+import static com.quewelcy.omnios.adapters.ControlAdapter.HOME;
 import static com.quewelcy.omnios.adapters.ControlAdapter.SHOW_QUEUE;
 import static com.quewelcy.omnios.adapters.ControlAdapter.SHOW_SAVED;
 import static com.quewelcy.omnios.fragments.RecyclerItemClickListener.OnItemClickListener;
@@ -117,6 +118,10 @@ public class OmniosActivity extends AppCompatActivity implements ServiceCommunic
                 return;
             }
             switch (mControlAdapter.getAction(position)) {
+                case HOME:
+                    mDrawerLayout.closeDrawers();
+                    mFolderFragment.goToHomePath();
+                    break;
                 case SHOW_SAVED:
                     mDrawerLayout.closeDrawers();
                     showSavedPaths();

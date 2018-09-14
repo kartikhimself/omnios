@@ -16,6 +16,7 @@ import static android.support.v7.widget.RecyclerView.ViewHolder;
 
 public class ControlAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    public static final String HOME = "HOME";
     public static final String SHOW_SAVED = "SHOW SAVED";
     public static final String SHOW_QUEUE = "SHOW QUEUE";
     public static final String A_BIT_LEFT = "-20 SEC";
@@ -29,6 +30,7 @@ public class ControlAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public ControlAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
         mDataSet = new ArrayList<>();
+        mDataSet.add(HOME);
         mDataSet.add(SHOW_SAVED);
         mDataSet.add(SHOW_QUEUE);
         mDataSet.add(A_BIT_LEFT);

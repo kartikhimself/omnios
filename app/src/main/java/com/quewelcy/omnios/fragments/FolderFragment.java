@@ -272,4 +272,8 @@ public class FolderFragment extends FixedWidthFragment {
         selectFile(file);
         mRecyclerView.getLayoutManager().scrollToPosition(selectedFilePosition);
     }
+
+    public void goToHomePath() {
+        readDirAndSet(Environment.getExternalStorageDirectory());
+    }
 }

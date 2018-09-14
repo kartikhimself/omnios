@@ -27,6 +27,7 @@ public class Configures {
     private static final String DOT_3GP = ".3gp";
     private static final String DOT_MOV = ".mov";
     private static final String DOT_MKV = ".mkv";
+    private static final String DOT_MPG = ".mpg";
     private static final String SEMICOLON = ":";
 
     public static boolean isMusic(String path) {
@@ -42,7 +43,8 @@ public class Configures {
                         path.endsWith(DOT_M4V) ||
                         path.endsWith(DOT_3GP) ||
                         path.endsWith(DOT_MOV) ||
-                        path.endsWith(DOT_MKV));
+                        path.endsWith(DOT_MKV) ||
+                        path.endsWith(DOT_MPG));
     }
 
     public static String dropExtension(String title) {
