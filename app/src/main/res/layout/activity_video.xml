@@ -6,6 +6,7 @@
     android:background="@android:color/black"
     android:gravity="center"
     android:keepScreenOn="true"
+    android:theme="@style/AppThemeDark"
     tools:ignore="Overdraw">
 
     <com.quewelcy.omnios.view.moving.MeanderBgSurfaceView
@@ -16,13 +17,6 @@
         android:layout_centerInParent="true"
         android:layout_centerVertical="true"
         android:layout_gravity="center" />
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/action_bar_semi"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
     <RelativeLayout
         android:id="@+id/activity_video_control_box"
@@ -79,6 +73,13 @@
         </RelativeLayout>
 
     </RelativeLayout>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/action_bar_semi"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
     <ProgressBar
         android:id="@+id/activity_video_progress"
