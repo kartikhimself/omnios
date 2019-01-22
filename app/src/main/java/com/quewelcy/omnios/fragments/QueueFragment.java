@@ -1,6 +1,7 @@
 package com.quewelcy.omnios.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
@@ -41,17 +42,17 @@ public class QueueFragment extends FixedWidthFragment {
         }
 
         @Override
-        public int getMovementFlags(RecyclerView recyclerView, ViewHolder viewHolder) {
+        public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull ViewHolder viewHolder) {
             return makeMovementFlags(0, LEFT | START | RIGHT | END);
         }
 
         @Override
-        public boolean onMove(RecyclerView recyclerView, ViewHolder viewHolder, ViewHolder target) {
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull ViewHolder viewHolder, @NonNull ViewHolder target) {
             return false;
         }
 
         @Override
-        public void onSwiped(ViewHolder viewHolder, int direction) {
+        public void onSwiped(@NonNull ViewHolder viewHolder, int direction) {
             switch (direction) {
                 case LEFT:
                 case START:
@@ -64,7 +65,7 @@ public class QueueFragment extends FixedWidthFragment {
     };
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle state) {
         View view = inflater.inflate(R.layout.fragment_details_list, container);
 
         mNoFiles = view.findViewById(R.id.fragment_details_list_empty);

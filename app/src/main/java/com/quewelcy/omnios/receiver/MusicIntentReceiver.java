@@ -23,17 +23,11 @@ public class MusicIntentReceiver extends BroadcastReceiver {
             String action = null;
             switch (keyEvent.getKeyCode()) {
                 case KeyEvent.KEYCODE_HEADSETHOOK:
-                case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
-                    action = Configures.Actions.PLAY_STATE;
-                    break;
                 case KeyEvent.KEYCODE_MEDIA_PLAY:
-                    action = Configures.Actions.PLAY_STATE;
-                    break;
                 case KeyEvent.KEYCODE_MEDIA_PAUSE:
-                    action = Configures.Actions.PLAY_STATE;
-                    break;
+                case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
                 case KeyEvent.KEYCODE_MEDIA_STOP:
-                    action = Configures.Actions.PLAY_STATE;
+                    action = Configures.Actions.PLAY_PAUSE;
                     break;
                 case KeyEvent.KEYCODE_MEDIA_NEXT:
                     action = Configures.Actions.NEXT;

@@ -2,6 +2,7 @@ package com.quewelcy.omnios.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 public class Playable implements Parcelable {
 
@@ -64,6 +65,7 @@ public class Playable implements Parcelable {
         return path.isEmpty();
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Playable [" + title + ", " + path + ", " + position + "]";

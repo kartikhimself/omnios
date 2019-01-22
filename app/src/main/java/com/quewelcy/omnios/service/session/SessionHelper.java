@@ -56,7 +56,8 @@ public class SessionHelper {
         mSession = new MediaSessionCompat(
                 mContext,
                 OMNIOS_SERVICE_TAG,
-                mMediaButtonReceiver, null);
+                mMediaButtonReceiver,
+                null);
         mSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
         mSession.setActive(true);
     }

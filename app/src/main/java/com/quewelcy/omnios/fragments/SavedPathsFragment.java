@@ -1,6 +1,8 @@
 package com.quewelcy.omnios.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
@@ -35,8 +37,11 @@ public class SavedPathsFragment extends FixedWidthFragment {
             if (playable == null) {
                 return;
             }
-            getActivity().onBackPressed();
-            ((OmniosActivity) getActivity()).navigateToPath(playable.getPath());
+            FragmentActivity activity = getActivity();
+            if (activity != null) {
+                activity.onBackPressed();
+                ((OmniosActivity) activity).navigateToPath(playable.getPath());
+            }
         }
 
         @Override
@@ -58,19 +63,19 @@ public class SavedPathsFragment extends FixedWidthFragment {
         }
 
         @Override
-        public int getMovementFlags(RecyclerView recyclerView, ViewHolder viewHolder) {
+        public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull ViewHolder viewHolder) {
             return makeMovementFlags(0, ItemTouchHelper.END);
         }
 
         @Override
-        public boolean onMove(RecyclerView recyclerView,
-                              ViewHolder viewHolder,
-                              ViewHolder target) {
+        public boolean onMove(@NonNull RecyclerView recyclerView,
+                              @NonNull ViewHolder viewHolder,
+                              @NonNull ViewHolder target) {
             return false;
         }
 
         @Override
-        public void onSwiped(ViewHolder viewHolder, int direction) {
+        public void onSwiped(@NonNull ViewHolder viewHolder, int direction) {
             switch (direction) {
                 case ItemTouchHelper.RIGHT:
                 case ItemTouchHelper.END:
@@ -81,7 +86,7 @@ public class SavedPathsFragment extends FixedWidthFragment {
     };
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle state) {
         View view = inflater.inflate(R.layout.fragment_details_list, container);
 
         mNoFiles = view.findViewById(R.id.fragment_details_list_empty);

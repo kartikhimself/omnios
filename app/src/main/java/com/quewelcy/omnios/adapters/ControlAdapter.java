@@ -1,6 +1,7 @@
 package com.quewelcy.omnios.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,10 +20,10 @@ public class ControlAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public static final String HOME = "HOME";
     public static final String SHOW_SAVED = "SHOW SAVED";
     public static final String SHOW_QUEUE = "SHOW QUEUE";
-    public static final String A_BIT_LEFT = "-20 SEC";
-    public static final String A_BIT_RIGHT = "+20 SEC";
-
-    private static final int VIEW_TYPE_CLEAR_ALL = 0;
+    public static final String SEEK_LEFT_60 = "-60 SEC";
+    public static final String SEEK_LEFT_20 = "-20 SEC";
+    public static final String SEEK_RIGHT_20 = "+20 SEC";
+    public static final String SEEK_RIGHT_60 = "+60 SEC";
 
     private final LayoutInflater mInflater;
     private final List<String> mDataSet;
@@ -33,29 +34,27 @@ public class ControlAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         mDataSet.add(HOME);
         mDataSet.add(SHOW_SAVED);
         mDataSet.add(SHOW_QUEUE);
-        mDataSet.add(A_BIT_LEFT);
-        mDataSet.add(A_BIT_RIGHT);
+        mDataSet.add(SEEK_LEFT_60);
+        mDataSet.add(SEEK_LEFT_20);
+        mDataSet.add(SEEK_RIGHT_20);
+        mDataSet.add(SEEK_RIGHT_60);
+    }
+
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new SettingsViewHolder(mInflater.inflate(R.layout.item_control, parent, false));
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        switch (viewType) {
-            case VIEW_TYPE_CLEAR_ALL:
-                return new SettingsViewHolder(mInflater.inflate(R.layout.item_control, parent, false));
-            default:
-                return null;
-        }
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         TextView title = holder.itemView.findViewById(R.id.item_control_title);
         title.setText(mDataSet.get(position));
     }
 
     @Override
     public int getItemViewType(int position) {
-        return VIEW_TYPE_CLEAR_ALL;
+        return 0;
     }
 
     @Override

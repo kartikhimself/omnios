@@ -61,7 +61,6 @@
             style="@style/AppTheme.Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginTop="12dp"
@@ -78,8 +77,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:layout_toEndOf="@+id/fragment_folder_cur_time"
-            android:layout_toLeftOf="@+id/fragment_folder_end_time"
-            android:layout_toRightOf="@+id/fragment_folder_cur_time"
             android:layout_toStartOf="@+id/fragment_folder_end_time" />
 
         <TextView
@@ -88,7 +85,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginTop="12dp"
             android:gravity="center"

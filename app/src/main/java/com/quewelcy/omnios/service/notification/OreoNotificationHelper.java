@@ -44,7 +44,7 @@ public class OreoNotificationHelper extends NotificationHelper {
             intentPrev.setAction(Configures.Actions.PREV);
 
             Intent intentPp = new Intent(this, OmniosService.class);
-            intentPp.setAction(Configures.Actions.PLAY_STATE);
+            intentPp.setAction(Configures.Actions.PLAY_PAUSE);
 
             Intent intentNext = new Intent(this, OmniosService.class);
             intentNext.setAction(Configures.Actions.NEXT);

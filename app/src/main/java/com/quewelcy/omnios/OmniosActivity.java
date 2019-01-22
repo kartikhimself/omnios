@@ -58,9 +58,11 @@ import static android.os.Handler.Callback;
 import static android.view.WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
 import static com.quewelcy.omnios.Configures.Actions;
 import static com.quewelcy.omnios.Configures.Extras;
-import static com.quewelcy.omnios.adapters.ControlAdapter.A_BIT_LEFT;
-import static com.quewelcy.omnios.adapters.ControlAdapter.A_BIT_RIGHT;
 import static com.quewelcy.omnios.adapters.ControlAdapter.HOME;
+import static com.quewelcy.omnios.adapters.ControlAdapter.SEEK_LEFT_20;
+import static com.quewelcy.omnios.adapters.ControlAdapter.SEEK_LEFT_60;
+import static com.quewelcy.omnios.adapters.ControlAdapter.SEEK_RIGHT_20;
+import static com.quewelcy.omnios.adapters.ControlAdapter.SEEK_RIGHT_60;
 import static com.quewelcy.omnios.adapters.ControlAdapter.SHOW_QUEUE;
 import static com.quewelcy.omnios.adapters.ControlAdapter.SHOW_SAVED;
 import static com.quewelcy.omnios.fragments.RecyclerItemClickListener.OnItemClickListener;
@@ -130,11 +132,17 @@ public class OmniosActivity extends AppCompatActivity implements ServiceCommunic
                     mDrawerLayout.closeDrawers();
                     showQueue();
                     break;
-                case A_BIT_LEFT:
-                    seekLeft();
+                case SEEK_LEFT_20:
+                    seekLeft(20);
                     break;
-                case A_BIT_RIGHT:
-                    seekRight();
+                case SEEK_RIGHT_20:
+                    seekRight(20);
+                    break;
+                case SEEK_LEFT_60:
+                    seekLeft(60);
+                    break;
+                case SEEK_RIGHT_60:
+                    seekRight(60);
                     break;
             }
         }
@@ -214,9 +222,13 @@ public class OmniosActivity extends AppCompatActivity implements ServiceCommunic
 
         mSavedPathsFragment = (SavedPathsFragment) fragmentManager.findFragmentById(R.id.activity_omnios_saved);
         mQueueFragment = (QueueFragment) fragmentManager.findFragmentById(R.id.activity_omnios_queue);
-        mQueueFragment.setServiceCommunicator(this);
+        if (mQueueFragment != null) {
+            mQueueFragment.setServiceCommunicator(this);
+        }
         mFolderFragment = (FolderFragment) fragmentManager.findFragmentById(R.id.activity_omnios_recycler_folder);
-        mFolderFragment.setServiceCommunicator(this);
+        if (mFolderFragment != null) {
+            mFolderFragment.setServiceCommunicator(this);
+        }
 
         FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.hide(mSavedPathsFragment);
@@ -271,7 +283,7 @@ public class OmniosActivity extends AppCompatActivity implements ServiceCommunic
                 mRequestedPermissions.add(READ_PHONE_STATE);
             }
             if (!mRequestedPermissions.isEmpty()) {
-                ActivityCompat.requestPermissions(this, mRequestedPermissions.toArray(new String[mRequestedPermissions.size()]), PermissionRequestCode.REQ_CODE);
+                ActivityCompat.requestPermissions(this, mRequestedPermissions.toArray(new String[0]), PermissionRequestCode.REQ_CODE);
             }
         }
         registerBroadcastReceiver();
@@ -398,16 +410,16 @@ public class OmniosActivity extends AppCompatActivity implements ServiceCommunic
     }
 
     @Override
-    public void seekLeft() {
+    public void seekLeft(int sec) {
         if (mService != null) {
-            mService.seekLeft();
+            mService.seekLeft(sec);
         }
     }
 
     @Override
-    public void seekRight() {
+    public void seekRight(int sec) {
         if (mService != null) {
-            mService.seekRight();
+            mService.seekRight(sec);
         }
     }
 

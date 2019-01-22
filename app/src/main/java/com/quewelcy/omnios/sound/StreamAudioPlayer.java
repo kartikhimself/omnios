@@ -7,6 +7,7 @@ import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnErrorListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.os.PowerManager;
+import android.util.Log;
 
 import static com.quewelcy.omnios.Configures.millisToTimeString;
 
@@ -47,7 +48,7 @@ public class StreamAudioPlayer implements OnCompletionListener, OnPreparedListen
     }
 
     @Override
-    public void onCompletion(MediaPlayer arg0) {
+    public void onCompletion(MediaPlayer mp) {
         if (mListener != null) {
             mListener.onPlaybackEnd();
         }
@@ -63,7 +64,7 @@ public class StreamAudioPlayer implements OnCompletionListener, OnPreparedListen
     }
 
     @Override
-    public void onPrepared(MediaPlayer mediaplayer) {
+    public void onPrepared(MediaPlayer mp) {
         if (mIsCancelled) {
             return;
         }

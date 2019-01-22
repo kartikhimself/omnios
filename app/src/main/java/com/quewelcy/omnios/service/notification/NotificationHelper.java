@@ -47,8 +47,8 @@ public class NotificationHelper extends ContextWrapper {
             Intent intentPrev = new Intent(getApplicationContext(), OmniosService.class);
             intentPrev.setAction(Configures.Actions.PREV);
 
-            Intent intentPp = new Intent(this, OmniosService.class);
-            intentPp.setAction(Configures.Actions.PLAY_STATE);
+            Intent intentPause = new Intent(this, OmniosService.class);
+            intentPause.setAction(Configures.Actions.PLAY_PAUSE);
 
             Intent intentNext = new Intent(this, OmniosService.class);
             intentNext.setAction(Configures.Actions.NEXT);
@@ -60,7 +60,7 @@ public class NotificationHelper extends ContextWrapper {
                     .setLargeIcon(new CrossRopes(300).getBitmap())
                     .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, OmniosActivity.class), FLAG_CANCEL_CURRENT))
                     .addAction(android.R.drawable.ic_media_previous, getString(R.string.notification_prev), PendingIntent.getService(getApplicationContext(), 0, intentPrev, FLAG_CANCEL_CURRENT))
-                    .addAction(android.R.drawable.ic_media_pause, getString(R.string.notification_stop), PendingIntent.getService(getApplicationContext(), 0, intentPp, FLAG_CANCEL_CURRENT))
+                    .addAction(android.R.drawable.ic_media_pause, getString(R.string.notification_stop), PendingIntent.getService(getApplicationContext(), 0, intentPause, FLAG_CANCEL_CURRENT))
                     .addAction(android.R.drawable.ic_media_next, getString(R.string.notification_next), PendingIntent.getService(getApplicationContext(), 0, intentNext, FLAG_CANCEL_CURRENT))
                     .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
                             .setMediaSession(token)

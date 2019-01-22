@@ -1,6 +1,7 @@
 package com.quewelcy.omnios.fragments;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -42,14 +43,16 @@ public class RecyclerItemClickListener implements OnItemTouchListener {
     }
 
     @Override
-    public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent e) {
-        childView = view.findChildViewUnder(e.getX(), e.getY());
-        childViewPosition = view.getChildAdapterPosition(childView);
-        return childView != null && mGestureDetector.onTouchEvent(e);
+    public boolean onInterceptTouchEvent(@NonNull RecyclerView view, @NonNull MotionEvent event) {
+        childView = view.findChildViewUnder(event.getX(), event.getY());
+        if (childView != null) {
+            childViewPosition = view.getChildAdapterPosition(childView);
+        }
+        return childView != null && mGestureDetector.onTouchEvent(event);
     }
 
     @Override
-    public void onTouchEvent(RecyclerView view, MotionEvent motionEvent) {
+    public void onTouchEvent(@NonNull RecyclerView view, @NonNull MotionEvent event) {
     }
 
     @Override

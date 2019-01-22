@@ -38,6 +38,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.quewelcy.omnios.Configures.Direction;
 import com.quewelcy.omnios.Configures.Extras;
 import com.quewelcy.omnios.Configures.PermissionRequestCode;
 import com.quewelcy.omnios.data.Playable;
@@ -51,7 +52,6 @@ import org.videolan.libvlc.MediaPlayer;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Timer;
@@ -62,18 +62,13 @@ import static android.Manifest.permission.READ_PHONE_STATE;
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static android.os.Build.VERSION.SDK_INT;
 import static android.view.WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
-import static com.quewelcy.omnios.Configures.DirFileComparator.NAME_SORT;
+import static com.quewelcy.omnios.Configures.Extras.STATE;
 import static com.quewelcy.omnios.Configures.millisToTimeString;
 
 public class VideoActivity extends AppCompatActivity
         implements IVLCVout.Callback {
 
-    private static final FileFilter VIDEO_FILTER = new FileFilter() {
-        @Override
-        public boolean accept(File f) {
-            return f.isFile() && Configures.isVideo(f.getName().toLowerCase());
-        }
-    };
+    private static final FileFilter VIDEO_FILTER = f -> f.isFile() && Configures.isVideo(f.getName().toLowerCase());
     private PhoneStateListener mPhoneStateListener;
     private BroadcastReceiver mReceiver;
     private TelephonyManager mTelephonyManager;
@@ -85,6 +80,8 @@ public class VideoActivity extends AppCompatActivity
     private Toolbar mToolbar;
     private SeekBar mSeek;
     private ImageView mPauseButton;
+    private ImageView mPreviousButton;
+    private ImageView mNextButton;
     private TextView mEndTime;
     private TextView mCurTime;
 
@@ -120,7 +117,7 @@ public class VideoActivity extends AppCompatActivity
         public void onEvent(MediaPlayer.Event event) {
             switch (event.type) {
                 case MediaPlayer.Event.EndReached:
-                    playNextIfPossible();
+                    playNeighbour(Direction.NEXT);
                     break;
                 case MediaPlayer.Event.Vout:
                     mSpin.setVisibility(View.GONE);
@@ -133,12 +130,12 @@ public class VideoActivity extends AppCompatActivity
             }
         }
     };
-    private final OnClickListener mPauseListener = new OnClickListener() {
-        public void onClick(View v) {
-            doPauseResume();
-            updatePlayPauseState();
-        }
+    private final OnClickListener mPauseListener = v -> {
+        doPauseResume();
+        updatePlayPauseState();
     };
+    private final OnClickListener mPreviousListener = v -> playNeighbour(Direction.PREV);
+    private final OnClickListener mNextListener = v -> playNeighbour(Direction.NEXT);
 
     private final OnSeekBarChangeListener mSeekListener = new OnSeekBarChangeListener() {
         @Override
@@ -231,6 +228,12 @@ public class VideoActivity extends AppCompatActivity
         mPauseButton = findViewById(R.id.activity_video_pause);
         mPauseButton.setOnClickListener(mPauseListener);
 
+        mPreviousButton = findViewById(R.id.activity_video_previous);
+        mPreviousButton.setOnClickListener(mPreviousListener);
+
+        mNextButton = findViewById(R.id.activity_video_next);
+        mNextButton.setOnClickListener(mNextListener);
+
         mSeek = findViewById(R.id.activity_video_seek);
         mSeek.setOnSeekBarChangeListener(mSeekListener);
 
@@ -312,7 +315,7 @@ public class VideoActivity extends AppCompatActivity
                 requestedPermissions.add(READ_PHONE_STATE);
             }
             if (!requestedPermissions.isEmpty()) {
-                ActivityCompat.requestPermissions(this, requestedPermissions.toArray(new String[requestedPermissions.size()]), PermissionRequestCode.REQ_CODE);
+                ActivityCompat.requestPermissions(this, requestedPermissions.toArray(new String[0]), PermissionRequestCode.REQ_CODE);
             }
         }
         registerBroadcastReceiver();
@@ -439,33 +442,15 @@ public class VideoActivity extends AppCompatActivity
         mSurfaceView.invalidate();
     }
 
-    private void playNextIfPossible() {
+    private void playNeighbour(Direction direction) {
         File currentFile = new File(mUrl);
-        if (currentFile.exists()) {
-            File[] files = currentFile.getParentFile().listFiles(VIDEO_FILTER);
-            Arrays.sort(files, NAME_SORT);
-            int position = -1;
-            for (int i = 0; i < files.length; i++) {
-                if (files[i].equals(currentFile)) {
-                    position = i;
-                    break;
-                }
-            }
-            if (position >= 0) {
-                if (position < files.length - 1) {
-                    position++;
-                } else {
-                    position = 0;
-                }
-                File nextFile = files[position];
-                finish();
-                if (!nextFile.equals(currentFile)) {
-                    Intent intent = new Intent(VideoActivity.this, VideoActivity.class);
-                    intent.setData(Uri.fromFile(nextFile));
-                    intent.putExtra(Extras.LOCK_ON_START, mIsLocked);
-                    startActivity(intent);
-                }
-            }
+        File nextFile = Configures.getNeighbour(direction, currentFile, VIDEO_FILTER);
+        finish();
+        if (!currentFile.equals(nextFile)) {
+            Intent intent = new Intent(VideoActivity.this, VideoActivity.class);
+            intent.setData(Uri.fromFile(nextFile));
+            intent.putExtra(Extras.LOCK_ON_START, mIsLocked);
+            startActivity(intent);
         }
     }
 
@@ -474,7 +459,7 @@ public class VideoActivity extends AppCompatActivity
             @Override
             public void onReceive(final Context context, final Intent intent) {
                 if (Intent.ACTION_HEADSET_PLUG.equals(intent.getAction()) &&
-                        intent.getIntExtra("state", 0) == 0 &&
+                        intent.getIntExtra(STATE, 0) == 0 &&
                         mMediaPlayer != null) {
                     mMediaPlayer.pause();
                 }
@@ -539,19 +524,20 @@ public class VideoActivity extends AppCompatActivity
 
     private void showControls() {
         updatePlayPauseState();
-        mToolbar.post(new Runnable() {
-            @Override
-            public void run() {
-                mPauseButton.setVisibility(View.VISIBLE);
-                mToolbar.setVisibility(View.VISIBLE);
-                mSeekBox.setVisibility(View.VISIBLE);
-                mHideTimer.start();
-            }
+        mToolbar.post(() -> {
+            mPauseButton.setVisibility(View.VISIBLE);
+            mPreviousButton.setVisibility(View.VISIBLE);
+            mNextButton.setVisibility(View.VISIBLE);
+            mToolbar.setVisibility(View.VISIBLE);
+            mSeekBox.setVisibility(View.VISIBLE);
+            mHideTimer.start();
         });
     }
 
     private void hideControls() {
         mPauseButton.setVisibility(View.INVISIBLE);
+        mPreviousButton.setVisibility(View.INVISIBLE);
+        mNextButton.setVisibility(View.INVISIBLE);
         mToolbar.setVisibility(View.INVISIBLE);
         mSeekBox.setVisibility(View.INVISIBLE);
     }
@@ -560,14 +546,11 @@ public class VideoActivity extends AppCompatActivity
         if (mMediaPlayer == null) {
             return;
         }
-        mPauseButton.post(new Runnable() {
-            @Override
-            public void run() {
-                if (mMediaPlayer.isPlaying()) {
-                    mPauseButton.setImageResource(android.R.drawable.ic_media_pause);
-                } else {
-                    mPauseButton.setImageResource(android.R.drawable.ic_media_play);
-                }
+        mPauseButton.post(() -> {
+            if (mMediaPlayer.isPlaying()) {
+                mPauseButton.setImageResource(android.R.drawable.ic_media_pause);
+            } else {
+                mPauseButton.setImageResource(android.R.drawable.ic_media_play);
             }
         });
     }
@@ -576,12 +559,10 @@ public class VideoActivity extends AppCompatActivity
         if (mMediaPlayer == null || !mMediaPlayer.isPlaying() || mDragging || mSeek == null) {
             return;
         }
-        VideoActivity.this.runOnUiThread(new Runnable() {
-            public void run() {
-                mSeek.setProgress((int) (100 * mMediaPlayer.getPosition()));
-                mCurTime.setText(millisToTimeString(mMediaPlayer.getTime()));
-                mEndTime.setText(millisToTimeString(mMediaPlayer.getLength()));
-            }
+        VideoActivity.this.runOnUiThread(() -> {
+            mSeek.setProgress((int) (100 * mMediaPlayer.getPosition()));
+            mCurTime.setText(millisToTimeString(mMediaPlayer.getTime()));
+            mEndTime.setText(millisToTimeString(mMediaPlayer.getLength()));
         });
     }
 

@@ -1,6 +1,7 @@
 package com.quewelcy.omnios.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,13 +29,14 @@ public abstract class DetailsListAdapter extends RecyclerView.Adapter<ViewHolder
         mDataSet = new ArrayList<>();
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new DetailsListViewHolder(mInflater.inflate(R.layout.item_continue, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String path = mDataSet.get(position).getPath();
         if (path == null || path.isEmpty()) {
             return;

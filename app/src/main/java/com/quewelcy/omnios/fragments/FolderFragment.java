@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,12 +52,7 @@ public class FolderFragment extends FixedWidthFragment {
     private Context mContext;
     private SeekBar mSeek;
 
-    private final FileFilter mMp3VideoDirFilter = new FileFilter() {
-        @Override
-        public boolean accept(File f) {
-            return f.isDirectory() || (f.isFile() && isFormatSupported(f.getName().toLowerCase()));
-        }
-    };
+    private final FileFilter mMp3VideoDirFilter = f -> f.isDirectory() || (f.isFile() && isFormatSupported(f.getName().toLowerCase()));
     private final OnSeekBarChangeListener mSeekListener = new OnSeekBarChangeListener() {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -75,13 +71,10 @@ public class FolderFragment extends FixedWidthFragment {
 
         }
     };
-    private final OnClickListener mNavClickListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            String path = (String) v.getTag();
-            if (path != null && path.length() > 0) {
-                readDirAndSet(new File(path));
-            }
+    private final OnClickListener mNavClickListener = v -> {
+        String path = (String) v.getTag();
+        if (path != null && path.length() > 0) {
+            readDirAndSet(new File(path));
         }
     };
     private final OnItemClickListener mClickListener = new OnItemClickListener() {
@@ -115,7 +108,10 @@ public class FolderFragment extends FixedWidthFragment {
 
     private void selectFile(File selected) {
         if (selected.isDirectory()) {
-            readDirAndSet(selected);
+            int selectedFilePosition = readDirAndSet(selected);
+            if (mRecyclerView.getLayoutManager() != null) {
+                mRecyclerView.getLayoutManager().scrollToPosition(selectedFilePosition);
+            }
         } else if (selected.isFile()) {
             final String p = selected.getPath().toLowerCase();
             if (Configures.isMusic(p)) {
@@ -127,7 +123,7 @@ public class FolderFragment extends FixedWidthFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_folder, container);
         mContext = inflater.getContext();
@@ -165,12 +161,7 @@ public class FolderFragment extends FixedWidthFragment {
         if (mServiceCommunicator != null) {
             mServiceCommunicator.play(new Playable(Configures.dropExtension(selected.getName()), selected.getAbsolutePath(), 0));
         }
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mAdapter.notifyDataSetChanged();
-            }
-        }, Configures.DELAY_MILLIS);
+        new Handler().postDelayed(() -> mAdapter.notifyDataSetChanged(), Configures.DELAY_MILLIS);
     }
 
     private void startVideo(File selected) {
@@ -235,12 +226,7 @@ public class FolderFragment extends FixedWidthFragment {
         }
 
         // Move path
-        mPathScroller.post(new Runnable() {
-            @Override
-            public void run() {
-                mPathScroller.smoothScrollTo(mPathScroller.getWidth() + 100, 0);
-            }
-        });
+        mPathScroller.post(() -> mPathScroller.smoothScrollTo(mPathScroller.getWidth() + 100, 0));
         return oldFileIndex;
     }
 
@@ -267,10 +253,7 @@ public class FolderFragment extends FixedWidthFragment {
     }
 
     public void navigateToPath(String path) {
-        File file = new File(path);
-        int selectedFilePosition = readDirAndSet(file);
-        selectFile(file);
-        mRecyclerView.getLayoutManager().scrollToPosition(selectedFilePosition);
+        selectFile(new File(path));
     }
 
     public void goToHomePath() {

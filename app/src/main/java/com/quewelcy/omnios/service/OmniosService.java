@@ -1,6 +1,7 @@
 package com.quewelcy.omnios.service;
 
 import android.app.Service;
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -17,6 +18,7 @@ import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 
 import com.quewelcy.omnios.Configures;
+import com.quewelcy.omnios.Configures.Direction;
 import com.quewelcy.omnios.data.Playable;
 import com.quewelcy.omnios.data.PrefHelper;
 import com.quewelcy.omnios.receiver.MusicIntentReceiver;
@@ -30,23 +32,17 @@ import com.quewelcy.omnios.view.pattern.Mosaic;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
 import static com.quewelcy.omnios.Configures.Actions;
-import static com.quewelcy.omnios.Configures.DirFileComparator.NAME_SORT;
 import static com.quewelcy.omnios.Configures.Extras;
+import static com.quewelcy.omnios.Configures.Extras.STATE;
 
 public class OmniosService extends Service implements StreamAudioPlayer.StreamListener {
 
-    private static final FileFilter MP3_FILTER = new FileFilter() {
-        @Override
-        public boolean accept(File f) {
-            return f.isFile() && f.getName().toLowerCase().endsWith(Configures.DOT_MP3);
-        }
-    };
+    private static final FileFilter MP3_FILTER = f -> f.isFile() && f.getName().toLowerCase().endsWith(Configures.DOT_MP3);
     private final IBinder mBinder = new OmniosBinder();
     private final Bundle mBundle = new Bundle();
     private final Queue<String> queue = new LinkedList<>();
@@ -111,7 +107,7 @@ public class OmniosService extends Service implements StreamAudioPlayer.StreamLi
                         validateCurrentPlayable();
                         playNeighbour(Direction.NEXT);
                         break;
-                    case Actions.PLAY_STATE:
+                    case Actions.PLAY_PAUSE:
                         playPause();
                         break;
                 }
@@ -191,9 +187,12 @@ public class OmniosService extends Service implements StreamAudioPlayer.StreamLi
                 }
                 switch (intent.getAction()) {
                     case Intent.ACTION_HEADSET_PLUG:
-                        if (intent.getIntExtra("state", 0) == 0) {
+                        if (intent.getIntExtra(STATE, 0) == 0) {
                             stopPlayback();
                         }
+                        break;
+                    case BluetoothDevice.ACTION_ACL_DISCONNECTED:
+                        stopPlayback();
                         break;
                 }
             }
@@ -202,6 +201,7 @@ public class OmniosService extends Service implements StreamAudioPlayer.StreamLi
         final IntentFilter filter = new IntentFilter();
         filter.addCategory(Actions.CATEGORY_BROADCAST);
         filter.addAction(Intent.ACTION_HEADSET_PLUG);
+        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
 
         registerReceiver(mReceiver, filter);
     }
@@ -287,15 +287,15 @@ public class OmniosService extends Service implements StreamAudioPlayer.StreamLi
         }
     }
 
-    public void seekLeft() {
+    public void seekLeft(int sec) {
         if (mPlayer != null && mPlayer.isPlaying()) {
-            mPlayer.seekMillis(mPlayer.getCurrentPosition() - 20000);
+            mPlayer.seekMillis(mPlayer.getCurrentPosition() - sec * 1000);
         }
     }
 
-    public void seekRight() {
+    public void seekRight(int sec) {
         if (mPlayer != null && mPlayer.isPlaying()) {
-            mPlayer.seekMillis(mPlayer.getCurrentPosition() + 20000);
+            mPlayer.seekMillis(mPlayer.getCurrentPosition() + sec * 1000);
         }
     }
 
@@ -306,9 +306,7 @@ public class OmniosService extends Service implements StreamAudioPlayer.StreamLi
     }
 
     public void play(Playable playable) {
-        if (playable != null &&
-                mCurrentPlayable != null &&
-                playable.equals(mCurrentPlayable)) {
+        if (playable != null && playable.equals(mCurrentPlayable)) {
             return;
         }
         stopPlayback();
@@ -319,38 +317,11 @@ public class OmniosService extends Service implements StreamAudioPlayer.StreamLi
         if (mCurrentPlayable == null) {
             return;
         }
-        File nextFile = null;
+        File nextFile;
         if (!queue.isEmpty()) {
             nextFile = new File(queue.poll());
         } else {
-            File currentFile = new File(mCurrentPlayable.getPath());
-            if (currentFile.exists()) {
-                File[] files = currentFile.getParentFile().listFiles(MP3_FILTER);
-                Arrays.sort(files, NAME_SORT);
-                int position = -1;
-                for (int i = 0; i < files.length; i++) {
-                    if (files[i].equals(currentFile)) {
-                        position = i;
-                        break;
-                    }
-                }
-                if (position >= 0) {
-                    if (direction == Direction.NEXT) {
-                        if (position < files.length - 1) {
-                            position++;
-                        } else {
-                            position = 0;
-                        }
-                    } else if (direction == Direction.PREV) {
-                        if (position > 0) {
-                            position--;
-                        } else {
-                            position = files.length - 1;
-                        }
-                    }
-                    nextFile = files[position];
-                }
-            }
+            nextFile = Configures.getNeighbour(direction, new File(mCurrentPlayable.getPath()), MP3_FILTER);
         }
         if (nextFile == null) {
             return;
@@ -381,10 +352,6 @@ public class OmniosService extends Service implements StreamAudioPlayer.StreamLi
 
     public void removeFromQueue(String path) {
         queue.remove(path);
-    }
-
-    private enum Direction {
-        PREV, NEXT
     }
 
     public enum PlayState {

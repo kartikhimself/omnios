@@ -12,9 +12,9 @@ public interface ServiceCommunicator {
 
     void stop();
 
-    void seekLeft();
+    void seekLeft(int sec);
 
-    void seekRight();
+    void seekRight(int sec);
 
     void addToQueue(String path);
 

@@ -1,6 +1,7 @@
 package com.quewelcy.omnios.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
@@ -31,13 +32,14 @@ public class FolderAdapter extends Adapter<ViewHolder> {
         mFiles = new ArrayList<>();
     }
 
+    @NonNull
     @Override
-    public ReViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ReViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ReViewHolder(mInflater.inflate(R.layout.item_folder, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         RelativeLayout bg = holder.itemView.findViewById(R.id.item_folder_bg);
         TextView title = holder.itemView.findViewById(R.id.item_folder_title);
         View musicIcon = holder.itemView.findViewById(R.id.item_folder_music_icon);

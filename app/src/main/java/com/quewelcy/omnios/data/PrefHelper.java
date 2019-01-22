@@ -152,7 +152,7 @@ public class PrefHelper {
 
     public static void clearPerms(Context c) {
         validatePrefs(c);
-        qPrefs.setPerms(new HashMap<String, Playable>());
+        qPrefs.setPerms(new HashMap<>());
         savePrefs(c);
     }
 
@@ -177,45 +177,45 @@ public class PrefHelper {
         private Playable audioPosition;
         private Playable videoPosition;
 
-        public Playable getPerm(String path) {
+        Playable getPerm(String path) {
             return perms.get(path);
         }
 
-        public Map<String, Playable> getPerms() {
+        Map<String, Playable> getPerms() {
             return perms;
         }
 
-        public void setPerms(Map<String, Playable> perms) {
+        void setPerms(Map<String, Playable> perms) {
             this.perms = perms;
         }
 
-        public Playable getCurrentPlayable() {
+        Playable getCurrentPlayable() {
             return currentPlayable;
         }
 
-        public void setCurrentPlayable(Playable currentPlayable) {
+        void setCurrentPlayable(Playable currentPlayable) {
             this.currentPlayable = currentPlayable;
         }
 
-        public Playable getAudioPosition() {
+        Playable getAudioPosition() {
             if (audioPosition == null) {
                 audioPosition = new Playable();
             }
             return audioPosition;
         }
 
-        public void setAudioPosition(Playable audioPosition) {
+        void setAudioPosition(Playable audioPosition) {
             this.audioPosition = audioPosition;
         }
 
-        public Playable getVideoPosition() {
+        Playable getVideoPosition() {
             if (videoPosition == null) {
                 videoPosition = new Playable();
             }
             return videoPosition;
         }
 
-        public void setVideoPosition(Playable videoPosition) {
+        void setVideoPosition(Playable videoPosition) {
             this.videoPosition = videoPosition;
         }
     }

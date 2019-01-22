@@ -11,7 +11,11 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.util.Arrays;
 import java.util.Comparator;
+
+import static com.quewelcy.omnios.Configures.DirFileComparator.NAME_SORT;
 
 public class Configures {
 
@@ -66,8 +70,8 @@ public class Configures {
         if ("file".equals(scheme)) {
             return contentUri.getPath();
         } else if ("content".equals(scheme)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                return getRealPathFromContentKitkat(c, contentUri);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                return getRealPathFromContentApi21(c, contentUri);
             } else {
                 return getDataColumn(c, contentUri, null, null);
             }
@@ -75,42 +79,30 @@ public class Configures {
         return null;
     }
 
-    @TargetApi(19)
-    private static String getRealPathFromContentKitkat(Context c, Uri uri) {
+    @TargetApi(21)
+    private static String getRealPathFromContentApi21(Context c, Uri uri) {
         if (DocumentsContract.isDocumentUri(c, uri)) {
             String documentId = DocumentsContract.getDocumentId(uri);
-
-            // External Storage
-            if ("com.android.externalstorage.documents".equals(uri.getAuthority())) {
-                String[] split = documentId.split(":");
-                if ("primary".equalsIgnoreCase(split[0])) {
-                    return Environment.getExternalStorageDirectory() + File.separator + split[1];
-                }
+            if (uri.getAuthority() == null) {
+                return null;
             }
-
-            // Downloads
-            else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
-                return getDataColumn(c,
-                        ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"),
-                                Long.valueOf(documentId)), null, null);
-            }
-
-            // MediaProvider
-            else if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
-                String[] split = documentId.split(":");
-                Uri contentUri = null;
-                switch (split[0]) {
-                    case "image":
-                        contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                        break;
-                    case "video":
-                        contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-                        break;
-                    case "audio":
-                        contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-                        break;
-                }
-                return getDataColumn(c, contentUri, "_id=?", new String[]{split[1]});
+            switch (uri.getAuthority()) {
+                // External Storage
+                case "com.android.externalstorage.documents":
+                    String[] split = documentId.split(":");
+                    if ("primary".equalsIgnoreCase(split[0])) {
+                        return Environment.getExternalStorageDirectory() + File.separator + split[1];
+                    }
+                    break;
+                // Downloads
+                case "com.android.providers.downloads.documents":
+                    return getDataColumn(c,
+                            ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"),
+                                    Long.valueOf(documentId)), null, null);
+                // MediaProvider
+                case "com.android.providers.media.documents":
+                    split = documentId.split(":");
+                    return getDataColumn(c, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "_id=?", new String[]{split[1]});
             }
         }
         return null;
@@ -172,26 +164,52 @@ public class Configures {
         };
 
         public static Comparator<File> ascending(final Comparator<File> other) {
-            return new Comparator<File>() {
-                public int compare(File left, File right) {
-                    return other.compare(left, right);
-                }
-            };
+            return other;
         }
 
         public static Comparator<File> getComparator(final DirFileComparator... comparators) {
-            return new Comparator<File>() {
-                public int compare(File left, File right) {
-                    for (DirFileComparator comparator : comparators) {
-                        int result = comparator.compare(left, right);
-                        if (result != 0) {
-                            return result;
-                        }
+            return (left, right) -> {
+                for (DirFileComparator comparator : comparators) {
+                    int result = comparator.compare(left, right);
+                    if (result != 0) {
+                        return result;
                     }
-                    return 0;
                 }
+                return 0;
             };
         }
+    }
+
+    public static File getNeighbour(Direction direction, File currentFile, FileFilter filter) {
+        File nextFile = null;
+        if (currentFile.exists()) {
+            File[] files = currentFile.getParentFile().listFiles(filter);
+            Arrays.sort(files, NAME_SORT);
+            int position = -1;
+            for (int i = 0; i < files.length; i++) {
+                if (files[i].equals(currentFile)) {
+                    position = i;
+                    break;
+                }
+            }
+            if (position >= 0) {
+                if (direction == Direction.NEXT) {
+                    if (position < files.length - 1) {
+                        position++;
+                    } else {
+                        position = 0;
+                    }
+                } else if (direction == Direction.PREV) {
+                    if (position > 0) {
+                        position--;
+                    } else {
+                        position = files.length - 1;
+                    }
+                }
+                nextFile = files[position];
+            }
+        }
+        return nextFile;
     }
 
     public static class Actions {
@@ -200,15 +218,20 @@ public class Configures {
         public static final String INVALIDATE = "com.quewelcy.omnios.INVALIDATE";
         public static final String ERROR_PLAYING = "com.quewelcy.omnios.ERROR_PLAYING";
         public static final String PREV = "com.quewelcy.omnios.PREV";
-        public static final String PLAY_STATE = "com.quewelcy.omnios.PLAY_STATE";
+        public static final String PLAY_PAUSE = "com.quewelcy.omnios.PLAY_PAUSE";
         public static final String NEXT = "com.quewelcy.omnios.NEXT";
     }
 
     public static class Extras {
+        public static final String STATE = "state";
         public static final String TIME_CUR = "time_cur";
         public static final String TIME_END = "time_end";
         public static final String PROGRESS = "progress";
         static final String LOCK_ON_START = "lock_on_start";
+    }
+
+    public enum Direction {
+        PREV, NEXT
     }
 
     static class PermissionRequestCode {

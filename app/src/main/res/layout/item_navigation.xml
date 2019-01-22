@@ -10,7 +10,6 @@
         android:id="@+id/item_folder_music_icon"
         android:layout_width="16dp"
         android:layout_height="18dp"
-        android:layout_marginLeft="4dp"
         android:layout_marginStart="4dp"
         omnios:circled="false" />
 

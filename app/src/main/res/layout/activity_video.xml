@@ -13,8 +13,8 @@
         android:id="@+id/activity_video_surface"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerHorizontal="true"
         android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_gravity="center" />
 
@@ -30,10 +30,34 @@
             android:layout_centerInParent="true"
             android:background="@drawable/circle_cl"
             android:clickable="true"
-            android:focusable="true"
             android:contentDescription="@string/app_name"
+            android:focusable="true"
             android:scaleType="centerInside"
             android:src="@android:drawable/ic_media_play" />
+
+        <ImageView
+            android:id="@+id/activity_video_previous"
+            android:layout_width="50dp"
+            android:layout_height="100dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:clickable="true"
+            android:contentDescription="@string/app_name"
+            android:focusable="true"
+            android:scaleType="centerInside"
+            android:src="@android:drawable/ic_media_previous" />
+
+        <ImageView
+            android:id="@+id/activity_video_next"
+            android:layout_width="50dp"
+            android:layout_height="100dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:clickable="true"
+            android:contentDescription="@string/app_name"
+            android:focusable="true"
+            android:scaleType="centerInside"
+            android:src="@android:drawable/ic_media_next" />
 
         <RelativeLayout
             android:id="@+id/activity_video_seek_box"
@@ -47,7 +71,6 @@
                 android:id="@+id/activity_video_cur_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true" />
 
@@ -57,17 +80,14 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_margin="5dp"
-                android:layout_toEndOf="@+id/activity_video_cur_time"
-                android:layout_toLeftOf="@+id/activity_video_end_time"
-                android:layout_toRightOf="@+id/activity_video_cur_time"
-                android:layout_toStartOf="@+id/activity_video_end_time" />
+                android:layout_toStartOf="@+id/activity_video_end_time"
+                android:layout_toEndOf="@+id/activity_video_cur_time" />
 
             <TextView
                 android:id="@+id/activity_video_end_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true" />
 
         </RelativeLayout>

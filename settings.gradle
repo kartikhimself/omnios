@@ -1,1 +1,1 @@
-include ':app'
+include ':app', ':libvlc-3.0.0', ':vlc-android-sdk-3.0.0'
