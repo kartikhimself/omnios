@@ -109,6 +109,24 @@ public class OmniosService extends Service implements StreamAudioPlayer.StreamLi
                         break;
                     case Actions.PLAY_PAUSE:
                         playPause();
+                        Bundle extras = intent.getExtras();
+                        boolean isDismissed = false;
+                        if (extras != null) {
+                            Object dismissNotifier = extras.get(Extras.DISMISS_NOTIFIER);
+                            if (dismissNotifier instanceof Boolean && (boolean) dismissNotifier) {
+                                dismissNotifier();
+                                isDismissed = true;
+                            }
+                        }
+                        if (!isDismissed) {
+                            setPlayNotifier(true);
+                        }
+                        break;
+                    case Actions.SEEK_LEFT:
+                        seekLeft(60);
+                        break;
+                    case Actions.SEEK_RIGHT:
+                        seekRight(60);
                         break;
                 }
             }
@@ -136,12 +154,7 @@ public class OmniosService extends Service implements StreamAudioPlayer.StreamLi
 
     @Override
     public void onPlaybackStart() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            ((OreoNotificationHelper) mNotificationHelper).showNotifier(mCurrentPlayable,
-                    ((OreoSessionHelper) mSessionHelper).getOreoSessionToken());
-        } else {
-            mNotificationHelper.showNotifier(mCurrentPlayable, mSessionHelper.getSessionToken());
-        }
+        setPlayNotifier(false);
     }
 
     @Override
@@ -189,10 +202,12 @@ public class OmniosService extends Service implements StreamAudioPlayer.StreamLi
                     case Intent.ACTION_HEADSET_PLUG:
                         if (intent.getIntExtra(STATE, 0) == 0) {
                             stopPlayback();
+                            setPlayNotifier(true);
                         }
                         break;
                     case BluetoothDevice.ACTION_ACL_DISCONNECTED:
                         stopPlayback();
+                        setPlayNotifier(true);
                         break;
                 }
             }
@@ -225,20 +240,15 @@ public class OmniosService extends Service implements StreamAudioPlayer.StreamLi
 
     public void stopPlayback() {
         mSessionHelper.release();
-        if (mCurrentPlayable == null) {
+        if (mCurrentPlayable == null || mPlayer == null) {
             return;
         }
         PrefHelper.setAudioPosition(OmniosService.this, mCurrentPlayable.getPath(), mPlayer.getCurrentPosition());
-        mCurrentPlayable = null;
 
-        if (mPlayer == null) {
-            return;
-        }
         mPlayer.stop();
         mPlayer = null;
 
         setPlaybackState(PlayState.PAUSE, "");
-        mNotificationHelper.dismissNotifier();
     }
 
     private void setPlaybackState(PlayState playState, String title) {
@@ -287,6 +297,22 @@ public class OmniosService extends Service implements StreamAudioPlayer.StreamLi
         }
     }
 
+    public void setPlayNotifier(boolean setPlay) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            ((OreoNotificationHelper) mNotificationHelper).showNotifier(mCurrentPlayable,
+                    ((OreoSessionHelper) mSessionHelper).getOreoSessionToken(), setPlay);
+        } else {
+            mNotificationHelper.showNotifier(mCurrentPlayable, mSessionHelper.getSessionToken(), setPlay);
+        }
+        if (setPlay) {
+            stopForeground(false);
+        }
+    }
+
+    public void dismissNotifier() {
+        mNotificationHelper.dismissNotifier();
+    }
+
     public void seekLeft(int sec) {
         if (mPlayer != null && mPlayer.isPlaying()) {
             mPlayer.seekMillis(mPlayer.getCurrentPosition() - sec * 1000);
@@ -306,7 +332,7 @@ public class OmniosService extends Service implements StreamAudioPlayer.StreamLi
     }
 
     public void play(Playable playable) {
-        if (playable != null && playable.equals(mCurrentPlayable)) {
+        if (mPlayer != null && mPlayer.isPlaying() && playable != null && playable.equals(mCurrentPlayable)) {
             return;
         }
         stopPlayback();

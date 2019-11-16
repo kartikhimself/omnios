@@ -399,6 +399,7 @@ public class OmniosActivity extends AppCompatActivity implements ServiceCommunic
     public void stop() {
         if (mService != null) {
             mService.stopPlayback();
+            mService.setPlayNotifier(true);
         }
     }
 

@@ -34,20 +34,27 @@ public class OreoNotificationHelper extends NotificationHelper {
     }
 
     @TargetApi(Build.VERSION_CODES.O)
-    public void showNotifier(Playable playable, MediaSession.Token token) {
+    public void showNotifier(Playable playable, MediaSession.Token token, boolean setPlay) {
         if (playable == null) {
             return;
         }
 
         try {
+            Intent intentSeekLeft = new Intent(getApplicationContext(), OmniosService.class);
+            intentSeekLeft.setAction(Configures.Actions.SEEK_LEFT);
+
             Intent intentPrev = new Intent(getApplicationContext(), OmniosService.class);
             intentPrev.setAction(Configures.Actions.PREV);
 
             Intent intentPp = new Intent(this, OmniosService.class);
             intentPp.setAction(Configures.Actions.PLAY_PAUSE);
+            intentPp.putExtra(Configures.Extras.DISMISS_NOTIFIER, !setPlay);
 
             Intent intentNext = new Intent(this, OmniosService.class);
             intentNext.setAction(Configures.Actions.NEXT);
+
+            Intent intentSeekRight = new Intent(getApplicationContext(), OmniosService.class);
+            intentSeekRight.setAction(Configures.Actions.SEEK_RIGHT);
 
             Notification notification = new Notification.Builder(getApplicationContext(), CHANNEL_ONE_ID)
                     .setContentText(playable.getTitle())
@@ -56,14 +63,30 @@ public class OreoNotificationHelper extends NotificationHelper {
                     .setSmallIcon(R.drawable.ic_launcher_white)
                     .setAutoCancel(false)
                     .setContentIntent(PendingIntent.getActivity(this, 0, new Intent(getApplicationContext(), OmniosActivity.class), FLAG_CANCEL_CURRENT))
-                    .addAction(android.R.drawable.ic_media_previous, getString(R.string.notification_prev), PendingIntent.getService(getApplicationContext(), 0, intentPrev, FLAG_CANCEL_CURRENT))
-                    .addAction(android.R.drawable.ic_media_pause, getString(R.string.notification_stop), PendingIntent.getService(getApplicationContext(), 0, intentPp, FLAG_CANCEL_CURRENT))
-                    .addAction(android.R.drawable.ic_media_next, getString(R.string.notification_next), PendingIntent.getService(getApplicationContext(), 0, intentNext, FLAG_CANCEL_CURRENT))
+                    .addAction(android.R.drawable.ic_media_rew,
+                            getString(R.string.notification_seek_left),
+                            PendingIntent.getService(getApplicationContext(), 0, intentSeekLeft, FLAG_CANCEL_CURRENT))
+                    .addAction(android.R.drawable.ic_media_previous,
+                            getString(R.string.notification_prev),
+                            PendingIntent.getService(getApplicationContext(), 0, intentPrev, FLAG_CANCEL_CURRENT))
+                    .addAction(setPlay ? android.R.drawable.ic_media_play : android.R.drawable.ic_media_pause,
+                            getString(setPlay ? R.string.notification_play : R.string.notification_stop),
+                            PendingIntent.getService(getApplicationContext(), 0, intentPp, FLAG_CANCEL_CURRENT))
+                    .addAction(android.R.drawable.ic_media_next,
+                            getString(R.string.notification_next),
+                            PendingIntent.getService(getApplicationContext(), 0, intentNext, FLAG_CANCEL_CURRENT))
+                    .addAction(android.R.drawable.ic_media_ff,
+                            getString(R.string.notification_seek_right),
+                            PendingIntent.getService(getApplicationContext(), 0, intentSeekRight, FLAG_CANCEL_CURRENT))
                     .setStyle(new Notification.MediaStyle()
                             .setMediaSession(token)
-                            .setShowActionsInCompactView(0, 1, 2))
+                            .setShowActionsInCompactView(0, 2, 4))
                     .build();
-            notification.flags |= Notification.FLAG_NO_CLEAR;
+            if (setPlay) {
+                notification.flags &= ~Notification.FLAG_NO_CLEAR;
+            } else {
+                notification.flags |= Notification.FLAG_NO_CLEAR;
+            }
             mService.startForeground(NOTIFIER_ID, notification);
         } catch (Exception e) {
             Log.e("audio_error", "can't show notifier", e);

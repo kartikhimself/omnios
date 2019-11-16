@@ -4,7 +4,8 @@
     <string name="no_files">No files</string>
     <string name="zero_time">0:00</string>
     <string name="notification_prev">Prev</string>
-    <string name="notification_stop">Pause</string>
+    <string name="notification_play">Play</string>
+    <string name="notification_stop">Stop</string>
     <string name="notification_next">Next</string>
     <string name="drawer_open">Saved positions</string>
     <string name="cant_play">Can\'t play this file</string>
@@ -16,4 +17,6 @@
     <string name="added_to_queue">Added to queue</string>
     <string name="queue_is_empty">Queue is empty</string>
     <string name="clear_list">Clear</string>
+    <string name="notification_seek_left">-60 sec</string>
+    <string name="notification_seek_right">+60 sec</string>
 </resources>

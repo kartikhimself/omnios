@@ -220,6 +220,8 @@ public class Configures {
         public static final String PREV = "com.quewelcy.omnios.PREV";
         public static final String PLAY_PAUSE = "com.quewelcy.omnios.PLAY_PAUSE";
         public static final String NEXT = "com.quewelcy.omnios.NEXT";
+        public static final String SEEK_LEFT = "com.quewelcy.omnios.SEEK_LEFT";
+        public static final String SEEK_RIGHT = "com.quewelcy.omnios.SEEK_RIGHT";
     }
 
     public static class Extras {
@@ -227,6 +229,7 @@ public class Configures {
         public static final String TIME_CUR = "time_cur";
         public static final String TIME_END = "time_end";
         public static final String PROGRESS = "progress";
+        public static final String DISMISS_NOTIFIER = "dismiss_notifier";
         static final String LOCK_ON_START = "lock_on_start";
     }
 

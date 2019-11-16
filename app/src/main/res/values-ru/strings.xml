@@ -4,7 +4,8 @@
     <string name="no_files">Нет файлов</string>
     <string name="zero_time">0:00</string>
     <string name="notification_prev">Пред</string>
-    <string name="notification_stop">Пауза</string>
+    <string name="notification_play">Играть</string>
+    <string name="notification_stop">Стоп</string>
     <string name="notification_next">След</string>
     <string name="drawer_open">Сохраненные</string>
     <string name="cant_play">Не могу воспроизвести</string>
@@ -16,4 +17,6 @@
     <string name="added_to_queue">Добавлено в очередь</string>
     <string name="queue_is_empty">Очерердь пуста</string>
     <string name="clear_list">Очистить</string>
+    <string name="notification_seek_left">-60 сек</string>
+    <string name="notification_seek_right">+60 сек</string>
 </resources>
